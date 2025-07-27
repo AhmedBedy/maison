@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 type Lang = 'ar' | 'fr' | 'en';
 
-type TranslationKeys =
+export type TranslationKeys =
   | 'home' //ok
   | 'courses'
   | 'admin' //ok

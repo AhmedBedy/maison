@@ -1,4 +1,6 @@
 import React from 'react';
+import type { TranslationKeys } from '../components/LanguageSwitcher'; 
+
 
 type ViewType =
   | 'home'
@@ -15,7 +17,7 @@ type adminProps = {
   isStudentLogin: boolean;
   setView: (view: ViewType) => void;
   supabase: any;
-  t: (v: string) => string;
+  t: (v: TranslationKeys) => string;
   setAlertMsg: (view: string) => void;
 };
 

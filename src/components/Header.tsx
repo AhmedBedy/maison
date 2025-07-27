@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from '/logo.png';
 
+import type { TranslationKeys } from './LanguageSwitcher'; 
+
 type ViewType =
   | 'home'
   | 'admin'
@@ -21,7 +23,7 @@ type HeaderProps = {
   setIsAdminLogin: (v: boolean) => void;
   setIsStudentLogin: (v: boolean) => void;
   setAlertMsg: (v: string) => void;
-  t: (v: string) => string;
+  t: (v: TranslationKeys) => string;
 };
 
 const Header: React.FC<HeaderProps> = ({

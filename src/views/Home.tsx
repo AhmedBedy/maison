@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import SeriesView from '../components/SeriesView';
 
+
 type Serie = {
   id: number;
   title: string;
