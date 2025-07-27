@@ -1,0 +1,70 @@
+.series-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+  padding-bottom: 2rem; /* prevent overlap with footer */
+  padding-top: 2rem;
+  width: 100%;
+  max-width: 90vw;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.series-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.series-card {
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.series-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  backface-visibility: hidden;
+  background-color: #fff0d9;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.flip-card-front {
+  background-color: #fef5e7;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  background-color: #ffebcd;
+}
+
+.serie-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
