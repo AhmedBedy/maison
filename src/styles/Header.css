@@ -8,7 +8,7 @@ header {
   margin: 0 auto; /* center horizontally */
   padding: 0.5rem;
 
-  border-bottom: 3vh solid #3361eeea;
+  border-bottom: 1.5vh solid yellowgreen;
   box-sizing: border-box;
   border-top-left-radius: clamp(20px, 10vw, 40px);
   border-top-right-radius: clamp(20px, 10vw, 40px);
@@ -62,7 +62,7 @@ header {
   box-sizing: border-box;
   transition: font-size 0.3s ease;
 
-
+font-weight: bold;
   font-size: clamp(0.6rem, 2.5vw, 2.5rem);
   cursor: pointer;
   text-align: center;
@@ -109,11 +109,13 @@ header {
 .header-titles h1 {
   color: yellow;
   margin: 0.1rem 0;
+  font-weight: bold;
   font-size: clamp(0.8rem, 5.7vw, 4rem); /* min 1.5rem, grow to 2.5rem */
   line-height: 1;
 }
 
 .header-titles h3 {
+  font-weight: bold;
   color: rgb(196, 223, 38);
   margin: 0;
   font-size: clamp(0.6rem, 4vw, 2.5rem); /* min 1rem, grow to 1.5rem */
@@ -160,6 +162,7 @@ header {
 .header-btn button {
   font-size: clamp(0.4rem, 2.2vw, 2rem);
   padding: 2.5% 2.5%;
+  font-weight: bold;
 
   border: none;
   border-radius: 2vw;
@@ -175,6 +178,8 @@ header {
   background-color: #ffc107; /* friendly yellow */
   color: #000;
   width: 40%;
+  font-weight: bold;
+
 }
 
 /* Student button — most attractive */
@@ -190,6 +195,8 @@ header {
   background-color: #999;
   color: white;
   width: 80%;
+  font-weight: bold;
+
 }
 
 /* Dashboard button (shared style) */
@@ -225,10 +232,14 @@ button.active {
   white-space: nowrap;
   margin: 0px;
   font-size: clamp(0.5rem, 2vw, 1.8rem);
+  font-weight: bold;
+
 }
 
 /* Logout button */
 .logout {
+  font-weight: bold;
+
   background-color: #bc0909ea;
   color: white;
   border-radius: 10px;
