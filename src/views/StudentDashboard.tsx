@@ -1,8 +1,11 @@
 import React from 'react';
+import type { TranslationKeys } from '../components/LanguageSwitcher'; 
 
 type studentBoardProps = {
   isStudentLogin: boolean;
-  t: (v: string) => string;
+  
+  setAlertMsg: (view: string) => void;
+  t: (v: TranslationKeys) => string;
 };
 
 const StudentDashboard: React.FC<studentBoardProps> = ({ isStudentLogin }) => {

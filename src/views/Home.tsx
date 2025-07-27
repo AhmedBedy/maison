@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import SeriesView from '../components/SeriesView';
+import type { TranslationKeys } from '../components/LanguageSwitcher'; 
 
 
 type Serie = {
@@ -10,7 +11,31 @@ type Serie = {
   icon: string;
 };
 
-const Home: React.FC = () => {
+type ViewType =
+  | 'home'
+  | 'admin'
+  | 'student'
+  | 'admin-dashboard'
+  | 'student-dashboard'
+  | 'courses'
+  | 'course-detail'
+  | 'course-prereqs';
+type homeProps = {
+  view: ViewType;
+  lang: 'ar' | 'fr' | 'en';
+  changeLang: () => void;
+  setIsAdminLogin: (v: boolean) => void;
+  setIsStudentLogin: (v: boolean) => void;
+
+  isAdminLogin: boolean;
+  isStudentLogin: boolean;
+  setView: (view: ViewType) => void;
+  supabase: any;
+  t: (v: TranslationKeys) => string;
+  setAlertMsg: (view: string) => void;
+};
+
+const Home: React.FC<homeProps> = () => {
   const [seriesList, setSeriesList] = useState<Serie[]>([]);
   const [selectedSerieId, setSelectedSerieId] = useState<number | null>(null);
 

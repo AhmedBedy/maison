@@ -60,7 +60,26 @@ function App() {
 
       <div className="Content fade-in">
         {view === 'home' && (
-          <Home t={t} setAlertMsg={setAlertMsg} setView={setView} />
+          <Home   
+          
+          view={view}
+        setView={setView}
+        lang={lang}
+        changeLang={changeLang}
+        isAdminLogin={isAdminLogin}
+        isStudentLogin={isStudentLogin}
+        setIsAdminLogin={setIsAdminLogin}
+        setIsStudentLogin={setIsStudentLogin}
+        setAlertMsg={setAlertMsg}
+        t={t}
+        supabase={supabase}
+          
+          
+          
+          
+          
+          
+          />
         )}
 
         {view === 'admin' && (
