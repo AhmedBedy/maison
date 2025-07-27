@@ -8,7 +8,7 @@ type adminBoardProps = {
   t: (v: TranslationKeys) => string;
 };
 
-const AdminDashboard: React.FC<adminBoardProps> = ({ isAdminLogin }) => {
+const AdminDashboard: React.FC<adminBoardProps> = ({  }) => {
   return (
     <>
       <div>

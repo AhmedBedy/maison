@@ -8,7 +8,7 @@ type studentBoardProps = {
   t: (v: TranslationKeys) => string;
 };
 
-const StudentDashboard: React.FC<studentBoardProps> = ({ isStudentLogin }) => {
+const StudentDashboard: React.FC<studentBoardProps> = ({  }) => {
   return (
     <>
       <div>
