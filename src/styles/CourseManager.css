@@ -1,0 +1,45 @@
+.course-manager {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.course-form input,
+.course-form textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.multi-select {
+  margin-top: 1rem;
+}
+
+.multi-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.multi-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f4f4f4;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.course-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+}

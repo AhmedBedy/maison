@@ -1,0 +1,60 @@
+.grades-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-in-out;
+  text-align: center;
+  direction: ltr;         /* Always LTR layout (important fix) */
+  text-align: center;
+}
+
+.back-btn {
+  background-color: #ffd983;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #ffb347;
+}
+
+.grades-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  direction: ltr;         /* Always LTR layout (important fix) */
+  text-align: center;
+}
+
+.grade-card {
+  background-color: #fff0d9;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: default;
+  font-weight: 600;
+  color: #5a3e1b;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  user-select: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.grade-card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

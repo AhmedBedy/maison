@@ -1,0 +1,111 @@
+.course-detail-container {
+    padding: 20px;
+    background-color: #fff8ef;
+    color: #333;
+    font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', cursive, sans-serif;
+    max-width: 900px;
+    margin: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .back-btn {
+    background-color: #ffcc66;
+    border: none;
+    color: #333;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-btn:hover {
+    background-color: #ffaa00;
+  }
+  
+  .course-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #bc0909ea;
+    text-align: center;
+  }
+  
+  .course-image {
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+  }
+  
+  .course-description,
+  .course-duration {
+    font-size: 18px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  
+  .video-container {
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  .video-container iframe {
+    width: 100%;
+    max-width: 560px;
+    height: 315px;
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: #007b5e;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 6px;
+  }
+  
+  .resource-list,
+  .assessment-list {
+    margin-left: 20px;
+    padding-left: 10px;
+  }
+  
+  .resource-item,
+  .question-item {
+    background-color: #f0f9ff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .resource-item a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+  }
+  
+  .question-text {
+    margin-bottom: 8px;
+  }
+  
+  .option-list {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  
+  .option-list li {
+    margin-bottom: 4px;
+  }
+  
+  .correct-answer {
+    color: green;
+    font-weight: bold;
+  }
+  

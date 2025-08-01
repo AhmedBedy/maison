@@ -1,0 +1,86 @@
+:root {
+  --subject-bg: linear-gradient(135deg, #fdfcfb, #e2d1c3);
+  --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  --highlight: #ffda77;
+}
+
+.subjects-container {
+  padding: 2rem 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+  direction: ltr;
+  text-align: left;
+}
+
+.subjects-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.subjects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.subject-card {
+  background: var(--subject-bg);
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: center;
+}
+
+.subject-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.subject-icon {
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.subject-title {
+  font-weight: 600;
+  color: #222;
+  font-size: 1.05rem;
+  margin-top: auto;
+}
+
+/* Back Button */
+.back-btn {
+  background-color: var(--highlight);
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.back-btn:hover {
+  background-color: #ffc14d;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
