@@ -76,6 +76,12 @@
   font-style: normal;
 }
 
+.course-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 .course-actions button {
   background-color: #4CAF50;
   color: white;
@@ -85,6 +91,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  align-items: center;
 }
 
 .course-actions button:hover {

@@ -92,7 +92,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({
   }
 
   return (
-    <div className="courses-container">
+    <div className="courses-container  ltr">
       <button onClick={onBack} className="back-btn">
         🔙 Back to subjects
       </button>
@@ -121,7 +121,9 @@ const CoursesView: React.FC<CoursesViewProps> = ({
               <div className="course-description">{course.description}</div>
               <div className="course-duration">⏱️ {course.duration}</div>
               {onSelectCourse && (
+                <div className="course-actions">
                 <button onClick={() => onSelectCourse(course)}>📖 View Course</button>
+              </div>
               )}
             </div>
           </div>
