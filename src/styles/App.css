@@ -50,11 +50,22 @@ form input {
   color: black;
 }
 
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
 .Content {
   min-height: 65vh;
   width: 95%;
   padding-bottom: 5rem; /* Enough space for footer */
   box-sizing: border-box;
+ 
 }
 
 .toast-msg {

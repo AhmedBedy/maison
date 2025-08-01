@@ -39,12 +39,11 @@ function App() {
     setAlertMsg(msg);
   }, [msg]);
 
-  useEffect(() => {
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  }, [lang]);
+ 
 
   return (
     <>
+    <div className={lang === 'ar' ? 'rtl' : 'ltr'}>
       <Header
         view={view}
         setView={setView}
@@ -57,7 +56,6 @@ function App() {
         setAlertMsg={setAlertMsg}
         t={t}
       />
-
       <div className="Content fade-in">
         {view === 'home' && (
           <Home   
@@ -121,11 +119,13 @@ function App() {
         )}
       </div>
       {msg && <div className="toast-msg">{msg}</div>}
+      
       <footer>
         <div>
           {t('footerText')} {new Date().getFullYear()} ©
         </div>
       </footer>
+      </div>
     </>
   );
 }

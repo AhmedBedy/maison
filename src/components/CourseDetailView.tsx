@@ -47,7 +47,8 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
   };
 
   return (
-    <div className="course-detail-container">
+
+    <div className="course-detail-container  ltr">
       <button onClick={onBack} className="back-btn">🔙 Back to courses</button>
 
       <h1>{course.title}</h1>
