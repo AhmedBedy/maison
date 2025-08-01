@@ -17,7 +17,7 @@ type GradesViewProps = {
   t: (key: TranslationKeys) => string;
 };
 
-const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade, t }) => {
+const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade }) => {
   const [grades, setGrades] = useState<Grade[]>([]);
 
   useEffect(() => {
