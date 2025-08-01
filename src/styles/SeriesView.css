@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.5s ease-in-out;
-  padding: 2rem 1rem;
+  padding: 1rem 0.5rem;
   width: 100%;
   box-sizing: border-box;
 
@@ -26,10 +26,10 @@
 
 
 .series-card {
-  width: 140px; /* FIXED width */
+  width: 125px; /* FIXED width */
   aspect-ratio: 1 / 1;
   cursor: pointer;
-  perspective: 1000px;
+  perspective: 700px;
 }
 
 
@@ -76,7 +76,7 @@
 
 .serie-icon {
   font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 p {

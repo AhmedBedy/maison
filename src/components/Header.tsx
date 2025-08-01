@@ -3,15 +3,8 @@ import logo from '/logo.png';
 
 import type { TranslationKeys } from './LanguageSwitcher'; 
 
-type ViewType =
-  | 'home'
-  | 'admin'
-  | 'student'
-  | 'admin-dashboard'
-  | 'student-dashboard'
-  | 'courses'
-  | 'course-detail'
-  | 'course-prereqs';
+import type { ViewType } from '../types'; // from components or views
+
 
 type HeaderProps = {
   view: ViewType;

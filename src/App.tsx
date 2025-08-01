@@ -8,21 +8,14 @@ import Admin from './views/AdminLogin';
 import Student from './views/StudentLogin';
 import AdminDashboard from './views/AdminDashboard';
 import StudentDashboard from './views/StudentDashboard';
+import ManageStudentsView from './views/ManageStudentsView';
 
 import './styles/App.css';
 import './styles/Header.css';
+import type { ViewType } from './types';
 
 function App() {
-  const [view, setView] = useState<
-    | 'home'
-    | 'admin'
-    | 'student'
-    | 'admin-dashboard'
-    | 'student-dashboard'
-    | 'courses'
-    | 'course-detail'
-    | 'course-prereqs'
-  >('home');
+  const [view, setView] = useState<ViewType>('home');
   const [lang, changeLang, t] = LangSwitcher();
 
   const [isAdminLogin, setIsAdminLogin] = useState<true | false>(false);
@@ -104,10 +97,10 @@ function App() {
 
         {view === 'admin-dashboard' && (
           <AdminDashboard
-            isAdminLogin={isAdminLogin}
-            t={t}
-            setAlertMsg={setAlertMsg}
-          />
+          isAdminLogin={isAdminLogin}
+          setAlertMsg={setAlertMsg}
+          setView={setView}
+        />
         )}
 
         {view === 'student-dashboard' && (
@@ -117,6 +110,12 @@ function App() {
             setAlertMsg={setAlertMsg}
           />
         )}
+
+{view === 'manage-students' && (
+  <ManageStudentsView setView={setView} setAlertMsg={setAlertMsg} />
+)}
+
+        
       </div>
       {msg && <div className="toast-msg">{msg}</div>}
       
