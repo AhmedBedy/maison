@@ -1,4 +1,4 @@
-// src/components/GradesView.tsx
+//    src/components/GradesView.tsx
 import React, { useEffect, useState } from 'react';
 import { fetchGradesBySeries } from '../api/schoolData';
 import '../styles/GradesView.css';
@@ -17,7 +17,7 @@ type GradesViewProps = {
   t: (key: TranslationKeys) => string;
 };
 
-const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade }) => {
+const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade, t }) => {
   const [grades, setGrades] = useState<Grade[]>([]);
 
   useEffect(() => {

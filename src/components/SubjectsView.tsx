@@ -17,7 +17,7 @@ type SubjectsViewProps = {
   t: (key: TranslationKeys) => string;
 };
 
-const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSubject, t }) => {
+const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSubject }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
