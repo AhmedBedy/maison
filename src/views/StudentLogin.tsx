@@ -31,36 +31,29 @@ const Student: React.FC<adminProps> = ({
   return (
     <>
       <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const phone = e.currentTarget.phone.value;
-            const password = e.currentTarget.password.value;
+      <form
+  onSubmit={async (e) => {
+    e.preventDefault();
+    const phone = Number(e.currentTarget.phone.value);
+    const password = Number(e.currentTarget.password.value);
 
-            const { data, error } = await supabase
-              .from('students')
-              .select('*')
-              .eq('phone', phone)
-              .single();
+    const { data, error } = await supabase
+      .from('students')
+      .select('*')
+      .eq('phone', phone)
+      .eq('password', password)
+      .single();
 
-            if (error || !data) {
-              setAlertMsg(t('studentNotFound'));
-              //setAlertMsg('student not found');
-              return;
-            }
+    if (error || !data) {
+      setAlertMsg(t('studentNotFound'));
+      return;
+    }
 
-            // Compare password manually (for now, assuming plain text; later, use hashing securely)
-            if (data.password === password) {
-              setIsStudentLogin(true);
-              setView('student-dashboard');
-              //setAlertMsg('Welcome!');
-              //await loadAdminData();
-            } else {
-              //setAlertMsg('Incorrect password');
-              setAlertMsg(t('wrongPassword'));
-            }
-          }}
-        >
+    setIsStudentLogin(true);
+    setView('student-dashboard');
+  }}
+>
+
           <h2>🧑‍🎓 {t('studentLogin')} </h2>
           <input
             type="text"

@@ -37,27 +37,25 @@ const Admin: React.FC<adminProps> = ({
             const phone = e.currentTarget.phone.value;
             const password = e.currentTarget.password.value;
 
-            const { data, error } = await supabase
-              .from('admins')
-              .select('*')
-              .eq('phone', phone)
-              .single();
+            const { data: admin, error } = await supabase
+  .from('admins')
+  .select('*')
+  .eq('phone', Number(phone))
+  .single();
 
-            if (error || !data) {
-              setAlertMsg(t('adminNotFound'));
-              // showToast('Admin not found');
-              return;
-            }
+if (error || !admin) {
+  setAlertMsg(t('adminNotFound'));
+  return;
+}
 
-            // Compare password manually (for now, assuming plain text; later, use hashing securely)
-            if (data.password === password) {
-              setIsAdminLogin(true);
-              setView('admin-dashboard');
-              //await loadAdminData();
-            } else {
-              // showToast('Incorrect password');
-              setAlertMsg(t('wrongPassword'));
-            }
+if (admin.password !== Number(password)) {
+  setAlertMsg(t('wrongPassword'));
+  return;
+}
+
+setIsAdminLogin(true);
+setView('admin-dashboard');
+
           }}
         >
           <h2>🛠 {t('adminLogin')} </h2>

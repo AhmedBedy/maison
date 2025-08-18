@@ -9,7 +9,12 @@ export type ViewType =
   | 'course-detail'
   | 'course-prereqs'
   | 'manage-students'
+  | 'edit-student'
+  | 'add-student'
   | 'manage-series'
   | 'manage-grades'
   | 'manage-subjects'
-  | 'manage-courses';
+  | 'manage-courses'
+  | 'edit-course'
+  | 'edit-course-link'
+  | 'add-course';

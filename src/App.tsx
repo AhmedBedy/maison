@@ -9,6 +9,14 @@ import Student from './views/StudentLogin';
 import AdminDashboard from './views/AdminDashboard';
 import StudentDashboard from './views/StudentDashboard';
 import ManageStudentsView from './views/ManageStudentsView';
+import EditStudentView from './views/EditStudentView';
+import AddStudentView from './views/AddStudentView';
+import ManageSeriesView from './views/ManageSeriesView';
+import ManageGradesView from './views/ManageGradesView';
+import ManageSubjectsView from './views/ManageSubjectsView';
+import ManageCoursesView from './views/ManageCoursesView';
+import EditCourseView from './views/EditCourseView';
+import EditCourseLinkView from './views/EditCourseLinkView';
 
 import './styles/App.css';
 import './styles/Header.css';
@@ -22,6 +30,12 @@ function App() {
   const [isStudentLogin, setIsStudentLogin] = useState<true | false>(false);
 
   const [msg, settMsg] = useState<string | null>('ahmed');
+
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+
+
 
   function setAlertMsg(msg: string | null) {
     settMsg(msg);
@@ -112,8 +126,82 @@ function App() {
         )}
 
 {view === 'manage-students' && (
-  <ManageStudentsView setView={setView} setAlertMsg={setAlertMsg} />
+  <ManageStudentsView
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+    setSelectedStudent={setSelectedStudent}
+  />
 )}
+
+{view === 'edit-student' && selectedStudent && (
+  <EditStudentView
+    student={selectedStudent}
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+{view === 'add-student' && (
+  <AddStudentView setView={setView} setAlertMsg={setAlertMsg} />
+)}
+{view === 'manage-series' && (
+  <ManageSeriesView
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+{view === 'manage-grades' && (
+  <ManageGradesView
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+
+{view === 'manage-subjects' && (
+  <ManageSubjectsView
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+
+
+{view === 'manage-courses' && (
+  <ManageCoursesView
+    setView={setView}
+    setSelectedCourse={setSelectedCourse}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+
+{view === 'edit-course' && selectedCourse && (
+  <EditCourseView
+    setView={setView}
+    selectedCourse={selectedCourse}
+    setAlertMsg={setAlertMsg}
+    setSelectedCourse={setSelectedCourse} // ✅ Pass it down
+  />
+)}
+
+
+
+
+
+
+
+{view === 'edit-course-link' && (
+  <EditCourseLinkView
+    setView={setView}
+    selectedCourse={selectedCourse}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+
+
 
         
       </div>
