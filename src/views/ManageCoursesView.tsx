@@ -164,6 +164,7 @@ const ManageCoursesView: React.FC<Props> = ({
       ) : filtered.length === 0 ? (
         <p>No courses found.</p>
       ) : (
+        <div className="table-wrapper">
         <table className="students-table">
           <thead>
             <tr>
@@ -171,28 +172,29 @@ const ManageCoursesView: React.FC<Props> = ({
               <th>Subjects</th>
               <th>Grades [Series]</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((course) => (
-              <tr key={course.id}>
-                <td>{course.title}</td>
-                <td>{course.subjects.map((s) => s.title).join(", ") || "—"}</td>
-                <td>
-                  {course.grades.length > 0
-                    ? course.grades
-                        .map((g) => `${g.title} [${g.serie_title}]`)
-                        .join(", ")
-                    : "—"}
-                </td>
-                <td>
-                  <button onClick={() => handleEdit(course)}>✏️</button>
-                  <button onClick={() => requestDelete(course.id)}>🗑️</button>
-                </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              </thead>
+            <tbody>
+              {filtered.map((course) => (
+                <tr key={course.id}>
+                  <td>{course.title}</td>
+                  <td>{course.subjects.map((s) => s.title).join(", ") || "—"}</td>
+                  <td>
+                    {course.grades.length > 0
+                      ? course.grades
+                          .map((g) => `${g.title} [${g.serie_title}]`)
+                          .join(", ")
+                      : "—"}
+                  </td>
+                  <td>
+                    <button onClick={() => handleEdit(course)}>✏️</button>
+                    <button onClick={() => requestDelete(course.id)}>🗑️</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {confirmDeleteId !== null && (
