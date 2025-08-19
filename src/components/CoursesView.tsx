@@ -26,6 +26,11 @@ export type Course = {
   assessment_questions: AssessmentQuestion[] | null;
 };
 
+type RawCourse = Omit<Course, 'resources' | 'assessment_questions'> & {
+  resources: string | Resource[] | null;
+  assessment_questions: string | AssessmentQuestion[] | null;
+};
+
 type CoursesViewProps = {
   gradeId: number;
   subjectId: number;
@@ -47,8 +52,8 @@ const CoursesView: React.FC<CoursesViewProps> = ({
   useEffect(() => {
     setLoading(true);
     fetchCoursesByGradeAndSubject(gradeId, subjectId)
-      .then((data: any[] | null) => {
-        console.log('Fetched courses data:', data);
+    .then((data: RawCourse[] | null) => {
+      console.log('Fetched courses data:', data);
         if (data && data.length > 0) {
           const parsedCourses: Course[] = data.map((course) => ({
             id: course.id,
@@ -86,8 +91,12 @@ const CoursesView: React.FC<CoursesViewProps> = ({
         <button onClick={onBack} className="back-btn">
           🔙 Back to subjects
         </button>
-        <p>{t ? 'noCoursesAvailable': 'No courses available for this grade and subject.'}</p>
-      </>
+        <p>
+          {t
+            ? t('noCoursesAvailable')
+            : 'No courses available for this grade and subject.'}
+        </p>
+              </>
     );
   }
 

@@ -47,7 +47,8 @@ export type TranslationKeys =
   | 'wrongPassword'
   | 'phoneRequired'
   | 'passwordRequired'
-  | 'noSeriesAvailable';
+  | 'noSeriesAvailable'
+  | 'noCoursesAvailable';
 
 export function LangSwitcher(): [
   Lang,
@@ -116,6 +117,7 @@ export function LangSwitcher(): [
       phoneRequired: 'Phone number is required',
       passwordRequired: 'Password is required',
       noSeriesAvailable: 'No series available',
+      noCoursesAvailable: 'No courses available for this grade and subject.',
     },
     fr: {
       home: 'Accueil',
@@ -167,6 +169,7 @@ export function LangSwitcher(): [
       phoneRequired: 'Le numéro de téléphone est requis',
       passwordRequired: 'Le mot de passe est requis',
       noSeriesAvailable: 'Aucune série disponible',
+      noCoursesAvailable: 'Aucun cours disponible pour ce niveau et cette matière.',
     },
     ar: {
       home: 'الرئيسية',
@@ -219,6 +222,7 @@ export function LangSwitcher(): [
       phoneRequired: 'رقم الهاتف لازم',
       passwordRequired: 'كلمة المرور لازمة',
       noSeriesAvailable: 'لا توجد سلاسل متاحة',
+      noCoursesAvailable: 'لا توجد دروس متاحة لهذه الدرجة وهذه المادة',
     },
   };
 
