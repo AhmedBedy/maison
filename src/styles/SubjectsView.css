@@ -9,6 +9,9 @@
   animation: fadeIn 0.5s ease-in-out;
   direction: ltr;
   text-align: left;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .subjects-container h2 {
