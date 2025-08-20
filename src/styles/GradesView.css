@@ -1,13 +1,15 @@
 .grades-container {
-  padding: 1rem;
+  padding: .2rem;
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
   animation: fadeIn 0.4s ease-in-out;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
+  min-height: 100vh;
+  box-sizing: border-box;
   direction: ltr;         /* Always LTR layout (important fix) */
 }
 
