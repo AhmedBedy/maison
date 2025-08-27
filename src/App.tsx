@@ -17,7 +17,7 @@ import ManageSubjectsView from './views/ManageSubjectsView';
 import ManageCoursesView from './views/ManageCoursesView';
 import EditCourseView from './views/EditCourseView';
 import EditCourseLinkView from './views/EditCourseLinkView';
-
+import AddCourseView from './views/AddCourseView';
 import './styles/App.css';
 import './styles/Header.css';
 import type { ViewType } from './types';
@@ -173,6 +173,14 @@ function App() {
     setView={setView}
     setSelectedCourse={setSelectedCourse}
     setAlertMsg={setAlertMsg}
+  />
+)}
+
+{view === 'add-course' && (
+  <AddCourseView
+    setView={setView}
+    setAlertMsg={setAlertMsg}
+    setSelectedCourse={setSelectedCourse}
   />
 )}
 
