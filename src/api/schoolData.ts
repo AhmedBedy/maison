@@ -4,7 +4,8 @@ export async function fetchGradesBySeries(serieId: number) {
   const { data, error } = await supabase
     .from('grades')
     .select('*')
-    .eq('serie_id', serieId);
+    .eq('serie_id', serieId)
+    .order('display_order');
 
   if (error) {
     console.error('Supabase fetch error:', error);
@@ -20,12 +21,13 @@ export async function fetchCoursesByGradeAndSubject(
   const { data, error } = await supabase
     .from('courses')
     .select(`
-      id, title, description, duration, img_url, video_url, resources, assessment_questions,
+      id, title, description, duration, img_url, video_url, resources, assessment_questions, display_order,
       course_grades!inner(grade_id),
       course_subjects!inner(subject_id)
     `)
     .eq('course_grades.grade_id', gradeId)
-    .eq('course_subjects.subject_id', subjectId);
+    .eq('course_subjects.subject_id', subjectId)
+    .order('display_order');
 
   if (error) {
     console.error('Supabase fetch error:', error);
@@ -35,8 +37,16 @@ export async function fetchCoursesByGradeAndSubject(
   return data;
 }
 
-export async function fetchSubjects() {
-  const { data, error } = await supabase.from('subjects').select('*');
+
+export async function fetchSubjectsByGrade(gradeId: number) {
+  const { data, error } = await supabase
+    .from('subjects')
+    .select(`
+      id, title, icon, display_order,
+      grade_subjects!inner(grade_id)
+    `)
+    .eq('grade_subjects.grade_id', gradeId)
+    .order('display_order');
 
   if (error) {
     console.error('Supabase fetch error:', error);

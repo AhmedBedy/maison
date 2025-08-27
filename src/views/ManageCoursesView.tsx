@@ -15,6 +15,7 @@ type Course = {
   prerequisites: string[] | null;
   resources: any[] | null;
   assessment_questions: any[] | null;
+  display_order: number;
   subjects: Subject[];
   grades: Grade[];
 };
@@ -53,6 +54,8 @@ const ManageCoursesView: React.FC<Props> = ({
         prerequisites,
         resources,
         assessment_questions,
+        display_order,
+
         course_subjects (
           subject_id,
           subjects (id, title)
@@ -66,7 +69,8 @@ const ManageCoursesView: React.FC<Props> = ({
             series (id, title)
           )
         )
-      `);
+        `)
+        .order("display_order");
 
     if (error) {
       setAlertMsg("Error loading courses");
@@ -100,6 +104,8 @@ const ManageCoursesView: React.FC<Props> = ({
         prerequisites: course.prerequisites || [],
         resources: course.resources || [],
         assessment_questions: course.assessment_questions || [],
+        display_order: course.display_order,
+
         subjects,
         grades,
       };
@@ -109,7 +115,8 @@ const ManageCoursesView: React.FC<Props> = ({
     setLoading(false);
   };
 
-  const filtered = courses.filter((c) =>
+  const filtered = courses
+  .filter((c) =>
     [c.title, c.description || "", c.duration || ""]
       .concat(
         c.subjects.map((s) => s.title),
@@ -117,7 +124,8 @@ const ManageCoursesView: React.FC<Props> = ({
         c.grades.map((g) => g.serie_title)
       )
       .some((field) => field.toLowerCase().includes(search.toLowerCase()))
-  );
+  )
+  .sort((a, b) => a.display_order - b.display_order);
 
   const handleEdit = (course: Course) => {
     setSelectedCourse(course);
@@ -165,19 +173,21 @@ const ManageCoursesView: React.FC<Props> = ({
         <p>No courses found.</p>
       ) : (
         <div className="table-wrapper">
-        <table className="students-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Subjects</th>
-              <th>Grades [Series]</th>
-              <th>Actions</th>
+         <table className="students-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Order</th>
+                <th>Subjects</th>
+                <th>Grades [Series]</th>
+                <th>Actions</th>
               </tr>
-              </thead>
+            </thead>
             <tbody>
               {filtered.map((course) => (
                 <tr key={course.id}>
                   <td>{course.title}</td>
+                  <td>{course.display_order}</td>
                   <td>{course.subjects.map((s) => s.title).join(", ") || "—"}</td>
                   <td>
                     {course.grades.length > 0
@@ -186,6 +196,7 @@ const ManageCoursesView: React.FC<Props> = ({
                           .join(", ")
                       : "—"}
                   </td>
+
                   <td>
                     <button onClick={() => handleEdit(course)}>✏️</button>
                     <button onClick={() => requestDelete(course.id)}>🗑️</button>

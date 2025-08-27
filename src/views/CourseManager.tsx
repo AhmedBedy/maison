@@ -14,6 +14,7 @@ const CourseManager: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
+  const [displayOrder, setDisplayOrder] = useState('');
   const [selectedGrades, setSelectedGrades] = useState<number[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
 
@@ -24,19 +25,28 @@ const CourseManager: React.FC = () => {
   }, []);
 
   const fetchCourses = async () => {
-    const { data, error } = await supabase.from('courses').select('*');
+    const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .order('display_order');
     if (error) console.error('Fetch courses error:', error.message);
     else setCourses(data || []);
   };
 
   const fetchGrades = async () => {
-    const { data, error } = await supabase.from('grades').select('*');
+    const { data, error } = await supabase
+      .from('grades')
+      .select('*')
+      .order('display_order');
     if (error) console.error('Fetch grades error:', error.message);
     else setGrades(data || []);
   };
 
   const fetchSubjects = async () => {
-    const { data, error } = await supabase.from('subjects').select('*');
+    const { data, error } = await supabase
+      .from('subjects')
+      .select('*')
+      .order('display_order');
     if (error) console.error('Fetch subjects error:', error.message);
     else setSubjects(data || []);
   };
@@ -46,7 +56,7 @@ const CourseManager: React.FC = () => {
 
     const { data: insertedCourse, error } = await supabase
       .from('courses')
-      .insert([{ title, description, video_url: videoUrl }])
+      .insert([{ title, description, video_url: videoUrl, display_order: Number(displayOrder) }])
       .select()
       .single();
 
@@ -70,6 +80,7 @@ const CourseManager: React.FC = () => {
     setVideoUrl('');
     setSelectedGrades([]);
     setSelectedSubjects([]);
+    setDisplayOrder('');
 
     fetchCourses();
   };
@@ -81,6 +92,14 @@ const CourseManager: React.FC = () => {
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required />
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
         <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="Video URL (optional)" />
+        <input
+          value={displayOrder}
+          onChange={(e) => setDisplayOrder(e.target.value)}
+          placeholder="Display Order"
+          type="number"
+          required
+        />
+
 
         <div className="multi-select">
           <label>Grades:</label>
@@ -129,7 +148,7 @@ const CourseManager: React.FC = () => {
       <ul className="course-list">
         {courses.map((c) => (
           <li key={c.id}>
-            <strong>{c.title}</strong> – {c.description}
+            <strong>{c.title}</strong> (order {c.display_order}) – {c.description}
           </li>
         ))}
       </ul>

@@ -8,6 +8,7 @@ type Subject = {
   id: number;
   title: string;
   icon: string;
+  display_order: number;
 };
 
 type Props = {
@@ -19,9 +20,9 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [newSubject, setNewSubject] = useState({ title: '', icon: '' });
+  const [newSubject, setNewSubject] = useState({ title: '', icon: '', display_order: '' });
   const [editSubjectId, setEditSubjectId] = useState<number | null>(null);
-  const [editSubjectData, setEditSubjectData] = useState({ title: '', icon: '' });
+  const [editSubjectData, setEditSubjectData] = useState({ title: '', icon: '', display_order: 0 });
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -30,7 +31,10 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const fetchSubjects = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('subjects').select('*');
+    const { data, error } = await supabase
+    .from('subjects')
+    .select('*')
+    .order('display_order');
     if (error) {
       setAlertMsg('Error loading subjects');
     } else {
@@ -40,39 +44,52 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   };
 
   const handleAdd = async () => {
-    if (!newSubject.title || !newSubject.icon) {
+    if (!newSubject.title || !newSubject.icon || newSubject.display_order === '') {
       setAlertMsg('Please fill all fields');
       return;
     }
-    const { error } = await supabase.from('subjects').insert([newSubject]);
+    const { error } = await supabase.from('subjects').insert({
+      title: newSubject.title,
+      icon: newSubject.icon,
+      display_order: Number(newSubject.display_order),
+    });
     if (error) {
       setAlertMsg('Error adding subject');
     } else {
       setAlertMsg('Subject added');
-      setNewSubject({ title: '', icon: '' });
+      setNewSubject({ title: '', icon: '', display_order: '' });
       fetchSubjects();
     }
   };
 
   const handleEdit = (subject: Subject) => {
     setEditSubjectId(subject.id);
-    setEditSubjectData({ title: subject.title, icon: subject.icon });
+    setEditSubjectData({
+      title: subject.title,
+      icon: subject.icon,
+      display_order: subject.display_order,
+    });
   };
 
   const handleUpdate = async () => {
-    if (!editSubjectData.title || !editSubjectData.icon) {
+    if (!editSubjectData.title || !editSubjectData.icon || editSubjectData.display_order === undefined) {
       setAlertMsg('Please fill all fields');
       return;
     }
     const { error } = await supabase
       .from('subjects')
-      .update(editSubjectData)
+      .update({
+        title: editSubjectData.title,
+        icon: editSubjectData.icon,
+        display_order: editSubjectData.display_order,
+      })
       .eq('id', editSubjectId);
     if (error) {
       setAlertMsg('Error updating subject');
     } else {
       setAlertMsg('Subject updated');
       setEditSubjectId(null);
+      setEditSubjectData({ title: '', icon: '', display_order: 0 });
       fetchSubjects();
     }
   };
@@ -125,6 +142,12 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
           value={newSubject.icon}
           onChange={(e) => setNewSubject({ ...newSubject, icon: e.target.value })}
         />
+        <input
+          placeholder="Order"
+          type="number"
+          value={newSubject.display_order}
+          onChange={(e) => setNewSubject({ ...newSubject, display_order: e.target.value })}
+        />
         <button onClick={handleAdd}>➕ Add</button>
       </div>
 
@@ -139,6 +162,7 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
               <tr>
                 <th>Title</th>
                 <th>Icon</th>
+                <th>Order</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -169,14 +193,30 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                       s.icon
                     )}
                   </td>
-                  <td >
+                  <td>
+                    {editSubjectId === s.id ? (
+                      <input
+                        type="number"
+                        value={editSubjectData.display_order}
+                        onChange={(e) =>
+                          setEditSubjectData({
+                            ...editSubjectData,
+                            display_order: Number(e.target.value),
+                          })
+                        }
+                      />
+                    ) : (
+                      s.display_order
+                    )}
+                  </td>
+                  <td>
   {editSubjectId === s.id ? (
     <>
       <button onClick={handleUpdate}>💾 Save</button>
       <button
         onClick={() => {
           setEditSubjectId(null);
-          setEditSubjectData({ title: '', icon: '' });
+          setEditSubjectData({ title: '', icon: '', display_order: 0 });
         }}
       >
         ❌ Cancel

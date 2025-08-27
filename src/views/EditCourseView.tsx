@@ -14,6 +14,7 @@ type Course = {
   prerequisites?: string[] | null;
   resources?: any[] | null;
   assessment_questions?: any[] | null;
+  display_order?: number;
 };
 
 type Props = {
@@ -34,6 +35,7 @@ const EditCourseView: React.FC<Props> = ({
   const [image, setImage] = useState(selectedCourse.image || '');
   const [videoUrl, setVideoUrl] = useState(selectedCourse.video_url || '');
   const [duration, setDuration] = useState(selectedCourse.duration || '');
+  const [displayOrder, setDisplayOrder] = useState(selectedCourse.display_order || 0);
   const [prerequisites, setPrerequisites] = useState<string[]>(selectedCourse.prerequisites || []);
   const [resources, setResources] = useState<any[]>(selectedCourse.resources || []);
   const [assessment, setAssessment] = useState<any[]>(selectedCourse.assessment_questions || []);
@@ -47,6 +49,7 @@ const EditCourseView: React.FC<Props> = ({
         img_url: image,
         video_url: videoUrl,
         duration,
+        display_order: displayOrder,
         prerequisites,
         resources,
         assessment_questions: assessment,
@@ -96,6 +99,12 @@ const EditCourseView: React.FC<Props> = ({
         <input value={image} onChange={(e) => setImage(e.target.value)} placeholder="Image URL" />
         <input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="YouTube URL" />
         <input value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="Duration" />
+        <input
+          type="number"
+          value={displayOrder}
+          onChange={(e) => setDisplayOrder(Number(e.target.value))}
+          placeholder="Display Order"
+        />
 
         <label>📌 Prerequisites (comma-separated)</label>
         <input

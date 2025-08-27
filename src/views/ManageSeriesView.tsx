@@ -7,6 +7,7 @@ type Series = {
   id: number;
   title: string;
   icon: string;
+  display_order: number;
 };
 
 type Props = {
@@ -18,9 +19,9 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   const [series, setSeries] = useState<Series[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [newSeries, setNewSeries] = useState({ title: '', icon: '' });
+  const [newSeries, setNewSeries] = useState({ title: '', icon: '', display_order: '' });
   const [editSeriesId, setEditSeriesId] = useState<number | null>(null);
-  const [editSeriesData, setEditSeriesData] = useState({ title: '', icon: '' });
+  const [editSeriesData, setEditSeriesData] = useState({ title: '', icon: '', display_order: 0 });
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const fetchSeries = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('series').select('*');
+    const { data, error } = await supabase.from('series').select('*').order('display_order');
     if (error) {
       setAlertMsg('Error loading series');
     } else {
@@ -39,39 +40,52 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   };
 
   const handleAdd = async () => {
-    if (!newSeries.title || !newSeries.icon) {
+    if (!newSeries.title || !newSeries.icon || newSeries.display_order === '') {
       setAlertMsg('Please fill all fields');
       return;
     }
-    const { error } = await supabase.from('series').insert([newSeries]);
+    const { error } = await supabase.from('series').insert({
+      title: newSeries.title,
+      icon: newSeries.icon,
+      display_order: Number(newSeries.display_order),
+    });
     if (error) {
       setAlertMsg('Error adding series');
     } else {
       setAlertMsg('Series added');
-      setNewSeries({ title: '', icon: '' });
+      setNewSeries({ title: '', icon: '', display_order: '' });
       fetchSeries();
     }
   };
 
   const handleEdit = (serie: Series) => {
     setEditSeriesId(serie.id);
-    setEditSeriesData({ title: serie.title, icon: serie.icon });
+    setEditSeriesData({
+      title: serie.title,
+      icon: serie.icon,
+      display_order: serie.display_order,
+    });
   };
 
   const handleUpdate = async () => {
-    if (!editSeriesData.title || !editSeriesData.icon) {
+    if (!editSeriesData.title || !editSeriesData.icon || editSeriesData.display_order === undefined) {
       setAlertMsg('Please fill all fields');
       return;
     }
     const { error } = await supabase
       .from('series')
-      .update(editSeriesData)
+      .update({
+        title: editSeriesData.title,
+        icon: editSeriesData.icon,
+        display_order: editSeriesData.display_order,
+      })
       .eq('id', editSeriesId);
     if (error) {
       setAlertMsg('Error updating series');
     } else {
       setAlertMsg('Series updated');
       setEditSeriesId(null);
+      setEditSeriesData({ title: '', icon: '', display_order: 0 });
       fetchSeries();
     }
   };
@@ -124,6 +138,12 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
           value={newSeries.icon}
           onChange={(e) => setNewSeries({ ...newSeries, icon: e.target.value })}
         />
+         <input
+          placeholder="Order"
+          type="number"
+          value={newSeries.display_order}
+          onChange={(e) => setNewSeries({ ...newSeries, display_order: e.target.value })}
+        />
         <button onClick={handleAdd}>➕ Add</button>
       </div>
 
@@ -138,6 +158,7 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
               <tr>
                 <th>Title</th>
                 <th>Icon</th>
+                <th>Order</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -168,14 +189,30 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                       s.icon
                     )}
                   </td>
-                  <td >
+                  <td>
+                    {editSeriesId === s.id ? (
+                      <input
+                        type="number"
+                        value={editSeriesData.display_order}
+                        onChange={(e) =>
+                          setEditSeriesData({
+                            ...editSeriesData,
+                            display_order: Number(e.target.value),
+                          })
+                        }
+                      />
+                    ) : (
+                      s.display_order
+                    )}
+                  </td>
+                  <td>
                     {editSeriesId === s.id ? (
                       <>
                         <button onClick={handleUpdate}>💾 Save</button>
                         <button
                           onClick={() => {
                             setEditSeriesId(null);
-                            setEditSeriesData({ title: '', icon: '' });
+                            setEditSeriesData({ title: '', icon: '', display_order: 0 });
                           }}
                         >
                           ❌ Cancel

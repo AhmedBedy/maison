@@ -24,6 +24,8 @@ export type Course = {
   video_url: string | null;
   resources: Resource[] | null;
   assessment_questions: AssessmentQuestion[] | null;
+  display_order?: number;
+
 };
 
 type RawCourse = Omit<Course, 'resources' | 'assessment_questions'> & {
@@ -70,6 +72,8 @@ const CoursesView: React.FC<CoursesViewProps> = ({
               course.assessment_questions && typeof course.assessment_questions === 'string'
                 ? JSON.parse(course.assessment_questions)
                 : course.assessment_questions || null,
+                display_order: course.display_order,
+
           }));
           setCourses(parsedCourses);
         } else {
@@ -107,7 +111,13 @@ const CoursesView: React.FC<CoursesViewProps> = ({
       </button>
       <h2>{t ? t('courses') : 'Courses'}</h2>
       <div className="courses-list">
-        {courses.map((course) => (
+      {[...courses]
+          .sort(
+            (a, b) =>
+              (a.display_order ?? Number.MAX_SAFE_INTEGER) -
+              (b.display_order ?? Number.MAX_SAFE_INTEGER)
+          )
+          .map((course) => (
           <div key={course.id} className="course-card">
             <div
               className="course-image-container"
@@ -136,8 +146,8 @@ const CoursesView: React.FC<CoursesViewProps> = ({
               )}
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+          </div>
     </div>
   );
 };

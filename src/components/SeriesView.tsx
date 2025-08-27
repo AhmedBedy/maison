@@ -6,6 +6,7 @@ type Series = {
   id: number;
   title: string;
   icon: string; // emoji or icon text
+  display_order?: number;
 };
 
 type SeriesViewProps = {
@@ -14,10 +15,16 @@ type SeriesViewProps = {
 };
 
 const SeriesView: React.FC<SeriesViewProps> = ({ series, onSelect }) => {
+  const sortedSeries = [...series].sort(
+    (a, b) =>
+      (a.display_order ?? Number.MAX_SAFE_INTEGER) -
+      (b.display_order ?? Number.MAX_SAFE_INTEGER)
+  );
+
   return (
     <div className="series-container">
       <div className="series-list">
-        {series.map((serie) => {
+        {sortedSeries.map((serie) => {
           // split icon (emoji) from description if any
           const [emoji, ...descParts] = serie.icon.split(' ');
           const description = descParts.join(' ');

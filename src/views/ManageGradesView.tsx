@@ -7,7 +7,10 @@ import type { ViewType } from '../types';
 type Grade = {
   id: number;
   title: string;
+  
   serie_id: number;
+  display_order: number;
+
 };
 
 type Series = {
@@ -25,9 +28,9 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   const [series, setSeries] = useState<Series[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [newGrade, setNewGrade] = useState({ title: '', serie_id: '' });
+  const [newGrade, setNewGrade] = useState({ title: '', serie_id: '', display_order: '' });
   const [editGradeId, setEditGradeId] = useState<number | null>(null);
-  const [editGradeData, setEditGradeData] = useState<{ title: string; serie_id: number }>({ title: '', serie_id: 0 });
+  const [editGradeData, setEditGradeData] = useState<{ title: string; serie_id: number; display_order: number }>({ title: '', serie_id: 0, display_order: 0 });
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,7 +40,7 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const fetchGrades = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('grades').select('*');
+    const { data, error } = await supabase.from('grades').select('*').order('display_order');
     if (error) {
       setAlertMsg('Error loading grades');
     } else {
@@ -47,47 +50,57 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
   };
 
   const fetchSeries = async () => {
-    const { data, error } = await supabase.from('series').select('*');
+    const { data, error } = await supabase.from('series').select('*').order('display_order');
     if (!error && data) setSeries(data);
   };
 
   const handleAdd = async () => {
-    if (!newGrade.title || !newGrade.serie_id) {
+    if (!newGrade.title || !newGrade.serie_id || newGrade.display_order === '') {
       setAlertMsg('Please fill all fields');
       return;
     }
     const { error } = await supabase.from('grades').insert({
       title: newGrade.title,
       serie_id: Number(newGrade.serie_id),
+      display_order: Number(newGrade.display_order),
     });
     if (error) {
       setAlertMsg('Error adding grade');
     } else {
       setAlertMsg('Grade added');
-      setNewGrade({ title: '', serie_id: '' });
+      setNewGrade({ title: '', serie_id: '', display_order: '' });
       fetchGrades();
     }
   };
 
   const handleEdit = (grade: Grade) => {
     setEditGradeId(grade.id);
-    setEditGradeData({ title: grade.title, serie_id: grade.serie_id });
+    setEditGradeData({
+      title: grade.title,
+      serie_id: grade.serie_id,
+      display_order: grade.display_order,
+    });
   };
 
   const handleUpdate = async () => {
-    if (!editGradeData.title || !editGradeData.serie_id) {
+    if (!editGradeData.title || !editGradeData.serie_id || editGradeData.display_order === undefined) {
       setAlertMsg('Please fill all fields');
       return;
     }
     const { error } = await supabase
       .from('grades')
-      .update({ title: editGradeData.title, serie_id: editGradeData.serie_id })
+      .update({
+        title: editGradeData.title,
+        serie_id: editGradeData.serie_id,
+        display_order: editGradeData.display_order,
+      })
       .eq('id', editGradeId);
     if (error) {
       setAlertMsg('Error updating grade');
     } else {
       setAlertMsg('Grade updated');
       setEditGradeId(null);
+      setEditGradeData({ title: '', serie_id: 0, display_order: 0 });
       fetchGrades();
     }
   };
@@ -145,6 +158,12 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
             </option>
           ))}
         </select>
+        <input
+          placeholder="Order"
+          type="number"
+          value={newGrade.display_order}
+          onChange={(e) => setNewGrade({ ...newGrade, display_order: e.target.value })}
+        />
         <button onClick={handleAdd}>➕ Add</button>
       </div>
 
@@ -159,6 +178,8 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
               <tr>
                 <th>Title</th>
                 <th>Series</th>
+                <th>Order</th>
+
                 <th>Actions</th>
               </tr>
             </thead>
@@ -198,26 +219,42 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                       series.find((s) => s.id === g.serie_id)?.title || 'Unknown'
                     )}
                   </td>
-                  <td >
-  {editGradeId === g.id ? (
-    <>
-      <button onClick={handleUpdate}>💾 Save</button>
-      <button
-        onClick={() => {
-          setEditGradeId(null);
-          setEditGradeData({ title: '', serie_id: 0 });
-        }}
-      >
-        ❌ Cancel
-      </button>
-    </>
-  ) : (
-    <>
-      <button onClick={() => handleEdit(g)}>✏️</button>
-      <button onClick={() => requestDelete(g.id)}>🗑️</button>
-    </>
-  )}
-</td>
+                  <td>
+                    {editGradeId === g.id ? (
+                      <input
+                        type="number"
+                        value={editGradeData.display_order}
+                        onChange={(e) =>
+                          setEditGradeData({
+                            ...editGradeData,
+                            display_order: Number(e.target.value),
+                          })
+                        }
+                      />
+                    ) : (
+                      g.display_order
+                    )}
+                  </td>
+                  <td>
+                    {editGradeId === g.id ? (
+                      <>
+                        <button onClick={handleUpdate}>💾 Save</button>
+                        <button
+                          onClick={() => {
+                            setEditGradeId(null);
+                            setEditGradeData({ title: '', serie_id: 0, display_order: 0 });
+                          }}
+                        >
+                          ❌ Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => handleEdit(g)}>✏️</button>
+                        <button onClick={() => requestDelete(g.id)}>🗑️</button>
+                      </>
+                    )}
+                  </td>
 
                 </tr>
               ))}

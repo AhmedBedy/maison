@@ -8,6 +8,8 @@ type Grade = {
   id: number;
   title: string;
   serie_id: number;
+  display_order?: number;
+
 };
 
 type GradesViewProps = {
@@ -37,7 +39,13 @@ const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade 
       </button>
       <h2>grades</h2>
       <div className="grades-list">
-        {grades.map((grade) => (
+      {[...grades]
+          .sort(
+            (a, b) =>
+              (a.display_order ?? Number.MAX_SAFE_INTEGER) -
+              (b.display_order ?? Number.MAX_SAFE_INTEGER)
+          )
+          .map((grade) => (
           <div
             key={grade.id}
             className="grade-card"

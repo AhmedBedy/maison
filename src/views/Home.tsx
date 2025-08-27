@@ -15,6 +15,8 @@ type Serie = {
   id: number;
   title: string;
   icon: string;
+  display_order?: number;
+
 };
 
 type ViewType =
@@ -52,7 +54,10 @@ const Home: React.FC<HomeProps> = ({ t }) => {
   // Fetch series on mount
   useEffect(() => {
     const fetchSeries = async () => {
-      const { data, error } = await supabase.from('series').select('*');
+      const { data, error } = await supabase
+        .from('series')
+        .select('*')
+        .order('display_order');
       if (error) {
         console.error('Error loading series:', error.message);
       } else if (Array.isArray(data)) {

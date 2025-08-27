@@ -1,6 +1,6 @@
 // src/components/SubjectsView.tsx
 import React, { useEffect, useState } from 'react';
-import { fetchSubjects } from '../api/schoolData';
+import { fetchSubjectsByGrade } from '../api/schoolData';
 import '../styles/SubjectsView.css';
 import type { TranslationKeys } from './LanguageSwitcher';
 
@@ -8,6 +8,8 @@ type Subject = {
   id: number;
   title: string;
   icon?: string;
+  display_order?: number;
+
 };
 
 type SubjectsViewProps = {
@@ -21,7 +23,7 @@ const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSu
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
-    fetchSubjects()
+    fetchSubjectsByGrade(gradeId)
       .then((data) => {
         if (data) setSubjects(data);
       })
@@ -37,7 +39,13 @@ const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSu
       </button>
       <h2>subjects</h2>
       <div className="subjects-list">
-        {subjects.map((subject) => (
+      {[...subjects]
+          .sort(
+            (a, b) =>
+              (a.display_order ?? Number.MAX_SAFE_INTEGER) -
+              (b.display_order ?? Number.MAX_SAFE_INTEGER)
+          )
+          .map((subject) => (
           <div
             key={subject.id}
             className="subject-card"
