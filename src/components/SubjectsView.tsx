@@ -19,7 +19,12 @@ type SubjectsViewProps = {
   t: (key: TranslationKeys) => string;
 };
 
-const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSubject }) => {
+const SubjectsView: React.FC<SubjectsViewProps> = ({
+  gradeId,
+  onBack,
+  onSelectSubject,
+  t,
+}) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
@@ -35,9 +40,9 @@ const SubjectsView: React.FC<SubjectsViewProps> = ({ gradeId, onBack, onSelectSu
   return (
     <div className="subjects-container">
       <button onClick={onBack} className="back-btn">
-        🔙 backToGrades {/* ✅ unchanged */}
+      🔙 {t('backToGrades')}
       </button>
-      <h2>subjects</h2>
+      <h2>{t('subjects')}</h2>
       <div className="subjects-list">
       {[...subjects]
           .sort(

@@ -19,7 +19,12 @@ type GradesViewProps = {
   t: (key: TranslationKeys) => string;
 };
 
-const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade }) => {
+const GradesView: React.FC<GradesViewProps> = ({
+  serieId,
+  onBack,
+  onSelectGrade,
+  t,
+}) => {
   const [grades, setGrades] = useState<Grade[]>([]);
 
   useEffect(() => {
@@ -35,9 +40,9 @@ const GradesView: React.FC<GradesViewProps> = ({ serieId, onBack, onSelectGrade 
   return (
     <div className="grades-container">
       <button onClick={onBack} className="back-btn">
-        🔙 backToSeries
+      🔙 {t('backToSeries')}
       </button>
-      <h2>grades</h2>
+      <h2>{t('grades')}</h2>
       <div className="grades-list">
       {[...grades]
           .sort(

@@ -93,7 +93,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({
     return (
       <>
         <button onClick={onBack} className="back-btn">
-          🔙 Back to subjects
+        🔙 {t ? t('backToSubjects') : 'Back to subjects'}
         </button>
         <p>
           {t
@@ -107,7 +107,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({
   return (
     <div className="courses-container  ltr">
       <button onClick={onBack} className="back-btn">
-        🔙 Back to subjects
+      🔙 {t ? t('backToSubjects') : 'Back to subjects'}
       </button>
       <h2>{t ? t('courses') : 'Courses'}</h2>
       <div className="courses-list">

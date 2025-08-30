@@ -130,6 +130,7 @@ function App() {
     setView={setView}
     setAlertMsg={setAlertMsg}
     setSelectedStudent={setSelectedStudent}
+    t={t}
   />
 )}
 
@@ -148,6 +149,7 @@ function App() {
   <ManageSeriesView
     setView={setView}
     setAlertMsg={setAlertMsg}
+    t={t}
   />
 )}
 
@@ -155,6 +157,7 @@ function App() {
   <ManageGradesView
     setView={setView}
     setAlertMsg={setAlertMsg}
+    t={t}
   />
 )}
 
@@ -163,6 +166,7 @@ function App() {
   <ManageSubjectsView
     setView={setView}
     setAlertMsg={setAlertMsg}
+    t={t}
   />
 )}
 
@@ -173,6 +177,7 @@ function App() {
     setView={setView}
     setSelectedCourse={setSelectedCourse}
     setAlertMsg={setAlertMsg}
+    t={t}
   />
 )}
 

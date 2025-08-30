@@ -1,6 +1,7 @@
 // src/components/SeriesView.tsx
 import React from 'react';
 import '../styles/SeriesView.css';
+import type { TranslationKeys } from './LanguageSwitcher';
 
 type Series = {
   id: number;
@@ -12,9 +13,10 @@ type Series = {
 type SeriesViewProps = {
   series: Series[];
   onSelect: (id: number) => void;
+  t: (key: TranslationKeys) => string;
 };
 
-const SeriesView: React.FC<SeriesViewProps> = ({ series, onSelect }) => {
+const SeriesView: React.FC<SeriesViewProps> = ({ series, onSelect, t }) => {
   const sortedSeries = [...series].sort(
     (a, b) =>
       (a.display_order ?? Number.MAX_SAFE_INTEGER) -
@@ -23,6 +25,7 @@ const SeriesView: React.FC<SeriesViewProps> = ({ series, onSelect }) => {
 
   return (
     <div className="series-container">
+      <h2>{t('series')}</h2>
       <div className="series-list">
         {sortedSeries.map((serie) => {
           // split icon (emoji) from description if any

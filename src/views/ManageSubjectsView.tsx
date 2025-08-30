@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import '../styles/ManageView.css';
 import type { ViewType } from '../types';
+import type { TranslationKeys } from '../components/LanguageSwitcher';
 
 
 type Subject = {
@@ -12,11 +13,12 @@ type Subject = {
 };
 
 type Props = {
-    setView: (view: ViewType) => void;
+  setView: (view: ViewType) => void;
   setAlertMsg: (msg: string) => void;
+  t: (key: TranslationKeys) => string;
 };
 
-const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
+const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg, t }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     .select('*')
     .order('display_order');
     if (error) {
-      setAlertMsg('Error loading subjects');
+      setAlertMsg(t('errorLoadingSubjects'));
     } else {
       setSubjects(data || []);
     }
@@ -45,7 +47,7 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleAdd = async () => {
     if (!newSubject.title || !newSubject.icon || newSubject.display_order === '') {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase.from('subjects').insert({
@@ -54,9 +56,9 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       display_order: Number(newSubject.display_order),
     });
     if (error) {
-      setAlertMsg('Error adding subject');
+      setAlertMsg(t('errorAddingSubject'));
     } else {
-      setAlertMsg('Subject added');
+      setAlertMsg(t('subjectAdded'));
       setNewSubject({ title: '', icon: '', display_order: '' });
       fetchSubjects();
     }
@@ -73,7 +75,7 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleUpdate = async () => {
     if (!editSubjectData.title || !editSubjectData.icon || editSubjectData.display_order === undefined) {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase
@@ -85,9 +87,9 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       })
       .eq('id', editSubjectId);
     if (error) {
-      setAlertMsg('Error updating subject');
+      setAlertMsg(t('errorUpdatingSubject'));
     } else {
-      setAlertMsg('Subject updated');
+      setAlertMsg(t('subjectUpdated'));
       setEditSubjectId(null);
       setEditSubjectData({ title: '', icon: '', display_order: 0 });
       fetchSubjects();
@@ -102,9 +104,9 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     if (confirmDeleteId === null) return;
     const { error } = await supabase.from('subjects').delete().eq('id', confirmDeleteId);
     if (error) {
-      setAlertMsg('Error deleting subject');
+      setAlertMsg(t('errorDeletingSubject'));
     } else {
-      setAlertMsg('Subject deleted');
+      setAlertMsg(t('subjectDeleted'));
       fetchSubjects();
     }
     setConfirmDeleteId(null);
@@ -117,53 +119,53 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   return (
     <div className="manage-students-container">
-      <h2>📘 Manage Subjects</h2>
+      <h2>📘 {t('manageSubjects')}</h2>
 
       <div className="back-row">
-        <button onClick={() => setView('admin-dashboard')}>⬅ Back</button>
+        <button onClick={() => setView('admin-dashboard')}>⬅ {t('back')}</button>
       </div>
 
       <input
         className="search-input"
         type="text"
-        placeholder="Search by title or icon"
+        placeholder={t('searchByTitleOrIcon')}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
       <div className="add-form">
         <input
-          placeholder="Title"
+          placeholder={t('title')}
           value={newSubject.title}
           onChange={(e) => setNewSubject({ ...newSubject, title: e.target.value })}
         />
         <input
-          placeholder="Icon"
+          placeholder={t('iconLabel')}
           value={newSubject.icon}
           onChange={(e) => setNewSubject({ ...newSubject, icon: e.target.value })}
         />
         <input
-          placeholder="Order"
+          placeholder={t('order')}
           type="number"
           value={newSubject.display_order}
           onChange={(e) => setNewSubject({ ...newSubject, display_order: e.target.value })}
         />
-        <button onClick={handleAdd}>➕ Add</button>
+        <button onClick={handleAdd}>➕ {t('add')}</button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t('loading')}</p>
       ) : filtered.length === 0 ? (
-        <p>No subjects found.</p>
+        <p>{t('noSubjectsFound')}</p>
       ) : (
         <div className="table-wrapper">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Icon</th>
-                <th>Order</th>
-                <th>Actions</th>
+                <th>{t('title')}</th>
+                <th>{t('iconLabel')}</th>
+                <th>{t('order')}</th>
+                <th>{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -212,14 +214,14 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                   <td>
   {editSubjectId === s.id ? (
     <>
-      <button onClick={handleUpdate}>💾 Save</button>
+      <button onClick={handleUpdate}>💾 {t('save')}</button>
       <button
         onClick={() => {
           setEditSubjectId(null);
           setEditSubjectData({ title: '', icon: '', display_order: 0 });
         }}
       >
-        ❌ Cancel
+        ❌ {t('cancel')}
       </button>
     </>
   ) : (
@@ -241,18 +243,17 @@ const ManageSubjectsView: React.FC<Props> = ({ setView, setAlertMsg }) => {
         <div className="modal-overlay">
           <div className="modal">
             <p>
-              Are you sure you want to delete{' '}
-              <strong>
-                {subjects.find((s) => s.id === confirmDeleteId)?.title || 'this subject'}
-              </strong>
+              {t('areYouSureDelete')} <strong>{
+                subjects.find((s) => s.id === confirmDeleteId)?.title || t('thisSubject')
+              }</strong>
               ?
             </p>
             <div className="modal-buttons">
               <button className="confirm-btn" onClick={confirmDelete}>
-                ✅ Yes
+                ✅ {t('yes')}
               </button>
               <button className="cancel-btn" onClick={() => setConfirmDeleteId(null)}>
-                ❌ No
+                ❌ {t('no')}
               </button>
             </div>
           </div>

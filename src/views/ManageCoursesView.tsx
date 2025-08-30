@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import "../styles/ManageStudentsView.css";
 import type { ViewType } from "../types";
+import type { TranslationKeys } from "../components/LanguageSwitcher";
 
 type Subject = { id: number; title: string };
 type Grade = { id: number; title: string; serie_title: string };
@@ -24,12 +25,14 @@ type Props = {
   setView: (view: ViewType) => void;
   setAlertMsg: (msg: string) => void;
   setSelectedCourse: (course: Course) => void;
+  t: (key: TranslationKeys) => string;
 };
 
 const ManageCoursesView: React.FC<Props> = ({
   setView,
   setAlertMsg,
   setSelectedCourse,
+  t,
 }) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +76,7 @@ const ManageCoursesView: React.FC<Props> = ({
         .order("display_order");
 
     if (error) {
-      setAlertMsg("Error loading courses");
+      setAlertMsg(t("errorLoadingCourses"));
       setLoading(false);
       return;
     }
@@ -142,9 +145,9 @@ const ManageCoursesView: React.FC<Props> = ({
     const { error } = await supabase.from("courses").delete().eq("id", confirmDeleteId);
 
     if (error) {
-      setAlertMsg("Error deleting course");
+      setAlertMsg(t("errorDeletingCourse"));
     } else {
-      setAlertMsg("Course deleted");
+      setAlertMsg(t("courseDeleted"));
       loadCourses();
     }
     setConfirmDeleteId(null);
@@ -152,35 +155,37 @@ const ManageCoursesView: React.FC<Props> = ({
 
   return (
     <div className="manage-students-container">
-      <h2>📚 Manage Courses</h2>
+      <h2>📚 {t("manageCourses")}</h2>
       <input
         type="text"
         className="search-input"
-        placeholder="Search by title, description, duration, subject or grade"
+        placeholder={t("searchCourseFields")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="manage-buttons">
-        <button onClick={() => setView("admin-dashboard")}>⬅ Back</button>
+      <button onClick={() => setView("admin-dashboard")}>⬅ {t("back")}</button>
         <button className="add-student-btn" onClick={() => setView("add-course")}>
-          ➕ Add New Course
-        </button>
+        ➕ {t("addCourse")}
+                </button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+           <p>{t("loading")}</p>
       ) : filtered.length === 0 ? (
-        <p>No courses found.</p>
+        <p>{t("noCoursesFound")}</p>
       ) : (
         <div className="table-wrapper">
          <table className="students-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Order</th>
-                <th>Subjects</th>
-                <th>Grades [Series]</th>
-                <th>Actions</th>
+              <th>{t("title")}</th>
+                <th>{t("order")}</th>
+                <th>{t("subjects")}</th>
+                <th>
+                  {t("grades")} [{t("series")}]
+                </th>
+                <th>{t("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -212,21 +217,20 @@ const ManageCoursesView: React.FC<Props> = ({
         <div className="modal-overlay">
           <div className="modal">
             <p>
-              Are you sure you want to delete{" "}
-              <strong>
-                {courses.find((c) => c.id === confirmDeleteId)?.title || "this course"}
-              </strong>
+            {t("areYouSureDelete")} <strong>{
+                courses.find((c) => c.id === confirmDeleteId)?.title || t("thisCourse")
+              }</strong>
               ?
             </p>
             <div className="modal-buttons">
               <button className="confirm-btn" onClick={confirmDelete}>
-                ✅ Yes
+              ✅ {t("yes")}
               </button>
               <button
                 className="cancel-btn"
                 onClick={() => setConfirmDeleteId(null)}
               >
-                ❌ No
+                ✅ {t("yes")}
               </button>
             </div>
           </div>

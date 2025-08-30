@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import '../styles/ManageView.css';
 import type { ViewType } from '../types';
+import type { TranslationKeys } from '../components/LanguageSwitcher';
 
 type Series = {
   id: number;
@@ -13,9 +14,10 @@ type Series = {
 type Props = {
   setView: (view: ViewType) => void;
   setAlertMsg: (msg: string) => void;
+  t: (key: TranslationKeys) => string;
 };
 
-const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
+const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg, t }) => {
   const [series, setSeries] = useState<Series[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     setLoading(true);
     const { data, error } = await supabase.from('series').select('*').order('display_order');
     if (error) {
-      setAlertMsg('Error loading series');
+      setAlertMsg(t('errorLoadingSeries'));
     } else {
       setSeries(data || []);
     }
@@ -41,7 +43,7 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleAdd = async () => {
     if (!newSeries.title || !newSeries.icon || newSeries.display_order === '') {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase.from('series').insert({
@@ -50,9 +52,9 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       display_order: Number(newSeries.display_order),
     });
     if (error) {
-      setAlertMsg('Error adding series');
+      setAlertMsg(t('errorAddingSeries'));
     } else {
-      setAlertMsg('Series added');
+      setAlertMsg(t('seriesAdded'));
       setNewSeries({ title: '', icon: '', display_order: '' });
       fetchSeries();
     }
@@ -69,7 +71,7 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleUpdate = async () => {
     if (!editSeriesData.title || !editSeriesData.icon || editSeriesData.display_order === undefined) {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase
@@ -81,9 +83,9 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       })
       .eq('id', editSeriesId);
     if (error) {
-      setAlertMsg('Error updating series');
+      setAlertMsg(t('errorUpdatingSeries'));
     } else {
-      setAlertMsg('Series updated');
+      setAlertMsg(t('seriesUpdated'));
       setEditSeriesId(null);
       setEditSeriesData({ title: '', icon: '', display_order: 0 });
       fetchSeries();
@@ -98,9 +100,9 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     if (confirmDeleteId === null) return;
     const { error } = await supabase.from('series').delete().eq('id', confirmDeleteId);
     if (error) {
-      setAlertMsg('Error deleting series');
+      setAlertMsg(t('errorDeletingSeries'));
     } else {
-      setAlertMsg('Series deleted');
+      setAlertMsg(t('seriesDeleted'));
       fetchSeries();
     }
     setConfirmDeleteId(null);
@@ -113,53 +115,53 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   return (
     <div className="manage-students-container">
-      <h2>📚 Manage Series</h2>
+      <h2>📚 {t('manageSeries')}</h2>
 
       <div className="back-row">
-        <button onClick={() => setView('admin-dashboard')}>⬅ Back</button>
+      <button onClick={() => setView('admin-dashboard')}>⬅ {t('back')}</button>
       </div>
 
       <input
         className="search-input"
         type="text"
-        placeholder="Search by title or icon"
-        value={search}
+        placeholder={t('searchByTitleOrIcon')}
+                value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
       <div className="add-form">
         <input
-          placeholder="Title"
+          placeholder={t('title')}
           value={newSeries.title}
           onChange={(e) => setNewSeries({ ...newSeries, title: e.target.value })}
         />
         <input
-          placeholder="Icon"
+          placeholder={t('iconLabel')}
           value={newSeries.icon}
           onChange={(e) => setNewSeries({ ...newSeries, icon: e.target.value })}
         />
          <input
-          placeholder="Order"
+          placeholder={t('order')}
           type="number"
           value={newSeries.display_order}
           onChange={(e) => setNewSeries({ ...newSeries, display_order: e.target.value })}
         />
-        <button onClick={handleAdd}>➕ Add</button>
+         <button onClick={handleAdd}>➕ {t('add')}</button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t('loading')}</p>
       ) : filtered.length === 0 ? (
-        <p>No series found.</p>
+        <p>{t('noSeriesFound')}</p>
       ) : (
         <div className="table-wrapper">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Icon</th>
-                <th>Order</th>
-                <th>Actions</th>
+                <th>{t('title')}</th>
+                <th>{t('iconLabel')}</th>
+                <th>{t('order')}</th>
+                <th>{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -208,14 +210,14 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                   <td>
                     {editSeriesId === s.id ? (
                       <>
-                        <button onClick={handleUpdate}>💾 Save</button>
+                         <button onClick={handleUpdate}>💾 {t('save')}</button>
                         <button
                           onClick={() => {
                             setEditSeriesId(null);
                             setEditSeriesData({ title: '', icon: '', display_order: 0 });
                           }}
                         >
-                          ❌ Cancel
+                          ❌ {t('cancel')}
                         </button>
                       </>
                     ) : (
@@ -236,21 +238,21 @@ const ManageSeriesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
         <div className="modal-overlay">
           <div className="modal">
             <p>
-              Are you sure you want to delete{' '}
+            {t('areYouSureDelete')}{' '}
               <strong>
-                {series.find((s) => s.id === confirmDeleteId)?.title || 'this series'}
+                {series.find((s) => s.id === confirmDeleteId)?.title || t('thisSeries')}
               </strong>
               ?
             </p>
             <div className="modal-buttons">
               <button className="confirm-btn" onClick={confirmDelete}>
-                ✅ Yes
+              ✅ {t('yes')}
               </button>
               <button
                 className="cancel-btn"
                 onClick={() => setConfirmDeleteId(null)}
               >
-                ❌ No
+                ❌ {t('no')}
               </button>
             </div>
           </div>

@@ -106,7 +106,7 @@ const Home: React.FC<HomeProps> = ({ t }) => {
   return (
     <div className="home-container">
       {!selectedSerieId ? (
-        <SeriesView series={seriesList} onSelect={handleSelectSerie} />
+         <SeriesView series={seriesList} onSelect={handleSelectSerie} t={t} />
       ) : !selectedGradeId ? (
         <GradesView
           serieId={selectedSerieId}

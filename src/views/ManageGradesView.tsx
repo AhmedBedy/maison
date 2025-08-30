@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import '../styles/ManageView.css'; // reused for consistent styling
 import type { ViewType } from '../types';
+import type { TranslationKeys } from '../components/LanguageSwitcher';
 
 type Grade = {
   id: number;
@@ -21,9 +22,10 @@ type Series = {
 type Props = {
   setView: (view: ViewType) => void;
   setAlertMsg: (msg: string) => void;
+  t: (key: TranslationKeys) => string;
 };
 
-const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
+const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg, t }) => {
   const [grades, setGrades] = useState<Grade[]>([]);
   const [series, setSeries] = useState<Series[]>([]);
   const [search, setSearch] = useState('');
@@ -42,7 +44,7 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     setLoading(true);
     const { data, error } = await supabase.from('grades').select('*').order('display_order');
     if (error) {
-      setAlertMsg('Error loading grades');
+      setAlertMsg(t('errorLoadingGrades'));
     } else {
       setGrades(data || []);
     }
@@ -56,7 +58,7 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleAdd = async () => {
     if (!newGrade.title || !newGrade.serie_id || newGrade.display_order === '') {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase.from('grades').insert({
@@ -65,9 +67,9 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       display_order: Number(newGrade.display_order),
     });
     if (error) {
-      setAlertMsg('Error adding grade');
+      setAlertMsg(t('errorAddingGrade'));
     } else {
-      setAlertMsg('Grade added');
+      setAlertMsg(t('gradeAdded'));
       setNewGrade({ title: '', serie_id: '', display_order: '' });
       fetchGrades();
     }
@@ -84,7 +86,7 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   const handleUpdate = async () => {
     if (!editGradeData.title || !editGradeData.serie_id || editGradeData.display_order === undefined) {
-      setAlertMsg('Please fill all fields');
+      setAlertMsg(t('pleaseFillAllFields'));
       return;
     }
     const { error } = await supabase
@@ -96,10 +98,10 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
       })
       .eq('id', editGradeId);
     if (error) {
-      setAlertMsg('Error updating grade');
-    } else {
-      setAlertMsg('Grade updated');
-      setEditGradeId(null);
+      setAlertMsg(t('pleaseFillAllFields'));
+        } else {
+          setAlertMsg(t('gradeUpdated'));
+          setEditGradeId(null);
       setEditGradeData({ title: '', serie_id: 0, display_order: 0 });
       fetchGrades();
     }
@@ -113,9 +115,9 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
     if (confirmDeleteId === null) return;
     const { error } = await supabase.from('grades').delete().eq('id', confirmDeleteId);
     if (error) {
-      setAlertMsg('Error deleting grade');
+      setAlertMsg(t('gradeUpdated'));
     } else {
-      setAlertMsg('Grade deleted');
+      setAlertMsg(t('gradeDeleted'));
       fetchGrades();
     }
     setConfirmDeleteId(null);
@@ -127,23 +129,23 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
 
   return (
     <div className="manage-students-container">
-      <h2>🏷️ Manage Grades</h2>
+      <h2>🏷️ {t('manageGrades')}</h2>
 
       <div style={{ marginBottom: '1rem' }}>
-        <button onClick={() => setView('admin-dashboard')}>⬅ Back</button>
+      <button onClick={() => setView('admin-dashboard')}>⬅ {t('back')}</button>
       </div>
 
       <input
         className="search-input"
         type="text"
-        placeholder="Search by title"
-        value={search}
+        placeholder={t('searchByTitle')}
+                value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
       <div className="form-row">
         <input
-          placeholder="Grade Title"
+          placeholder={t('title')}
           value={newGrade.title}
           onChange={(e) => setNewGrade({ ...newGrade, title: e.target.value })}
         />
@@ -151,7 +153,7 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
           value={newGrade.serie_id}
           onChange={(e) => setNewGrade({ ...newGrade, serie_id: e.target.value })}
         >
-          <option value="">Select Series</option>
+             <option value="">{t('selectSeries')}</option>
           {series.map((s) => (
             <option key={s.id} value={s.id}>
               {s.title}
@@ -159,28 +161,28 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
           ))}
         </select>
         <input
-          placeholder="Order"
+placeholder={t('order')}
           type="number"
           value={newGrade.display_order}
           onChange={(e) => setNewGrade({ ...newGrade, display_order: e.target.value })}
         />
-        <button onClick={handleAdd}>➕ Add</button>
+           <button onClick={handleAdd}>➕ {t('add')}</button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t('loading')}</p>
       ) : filtered.length === 0 ? (
-        <p>No grades found.</p>
+        <p>{t('noGradesFound')}</p>
       ) : (
         <div className="table-wrapper">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Series</th>
-                <th>Order</th>
+              <th>{t('title')}</th>
+                <th>{t('series')}</th>
+                <th>{t('order')}</th>
 
-                <th>Actions</th>
+                <th>{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -238,14 +240,14 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
                   <td>
                     {editGradeId === g.id ? (
                       <>
-                        <button onClick={handleUpdate}>💾 Save</button>
+                         <button onClick={handleUpdate}>💾 {t('save')}</button>
                         <button
                           onClick={() => {
                             setEditGradeId(null);
                             setEditGradeData({ title: '', serie_id: 0, display_order: 0 });
                           }}
                         >
-                          ❌ Cancel
+                               ❌ {t('cancel')}
                         </button>
                       </>
                     ) : (
@@ -267,24 +269,20 @@ const ManageGradesView: React.FC<Props> = ({ setView, setAlertMsg }) => {
         <div className="modal-overlay">
           <div className="modal">
             <p>
-              Are you sure you want to delete{' '}
-              <strong>
-                {
-                  grades.find((g) => g.id === confirmDeleteId)?.title ||
-                  'this grade'
-                }
-              </strong>
+            {t('areYouSureDelete')} <strong>{
+                grades.find((g) => g.id === confirmDeleteId)?.title || t('thisGrade')
+              }</strong>
               ?
             </p>
             <div className="modal-buttons">
               <button className="confirm-btn" onClick={confirmDelete}>
-                ✅ Yes
+              ✅ {t('yes')}
               </button>
               <button
                 className="cancel-btn"
                 onClick={() => setConfirmDeleteId(null)}
               >
-                ❌ No
+                ❌ {t('no')}
               </button>
             </div>
           </div>
