@@ -19,28 +19,8 @@ type Serie = {
 
 };
 
-type ViewType =
-  | 'home'
-  | 'admin'
-  | 'student'
-  | 'admin-dashboard'
-  | 'student-dashboard'
-  | 'courses'
-  | 'course-detail'
-  | 'course-prereqs';
-
 type HomeProps = {
-  view: ViewType;
-  lang: 'ar' | 'fr' | 'en';
-  changeLang: () => void;
-  setIsAdminLogin: (v: boolean) => void;
-  setIsStudentLogin: (v: boolean) => void;
-  isAdminLogin: boolean;
-  isStudentLogin: boolean;
-  setView: (view: ViewType) => void;
-  supabase: any;
   t: (v: TranslationKeys) => string;
-  setAlertMsg: (msg: string) => void;
 };
 
 const Home: React.FC<HomeProps> = ({ t }) => {

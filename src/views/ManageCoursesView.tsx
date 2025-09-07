@@ -141,10 +141,65 @@ const ManageCoursesView: React.FC<Props> = ({
 
   const confirmDelete = async () => {
     if (confirmDeleteId === null) return;
+    const course = courses.find((c) => c.id === confirmDeleteId);
+    const gradeIds = course?.grades.map((g) => g.id) ?? [];
+    const subjectIds = course?.subjects.map((s) => s.id) ?? [];
+    const pairs = gradeIds.flatMap((grade_id) =>
+      subjectIds.map((subject_id) => ({ grade_id, subject_id }))
+    );
 
-    const { error } = await supabase.from("courses").delete().eq("id", confirmDeleteId);
+    const { error } = await supabase
+      .from("courses")
+      .delete()
+      .eq("id", confirmDeleteId);
 
-    if (error) {
+    let deleteError = error;
+    if (!deleteError) {
+      for (const { grade_id, subject_id } of pairs) {
+        const { data: gradeCourses, error: gradeCoursesError } = await supabase
+          .from("course_grades")
+          .select("course_id")
+          .eq("grade_id", grade_id);
+        if (gradeCoursesError) {
+          deleteError = gradeCoursesError;
+          break;
+        }
+        const gradeCourseIds = (gradeCourses ?? []).map(
+          (c: { course_id: number }) => c.course_id
+        );
+        if (gradeCourseIds.length === 0) {
+          const { error: delError } = await supabase
+            .from("grade_subjects")
+            .delete()
+            .eq("grade_id", grade_id)
+            .eq("subject_id", subject_id);
+          if (delError) deleteError = delError;
+          continue;
+        }
+        const { data: linked, error: linkedError } = await supabase
+          .from("course_subjects")
+          .select("course_id")
+          .eq("subject_id", subject_id)
+          .in("course_id", gradeCourseIds);
+        if (linkedError) {
+          deleteError = linkedError;
+          break;
+        }
+        if (!linked || linked.length === 0) {
+          const { error: delError } = await supabase
+            .from("grade_subjects")
+            .delete()
+            .eq("grade_id", grade_id)
+            .eq("subject_id", subject_id);
+          if (delError) {
+            deleteError = delError;
+            break;
+          }
+        }
+      }
+    }
+
+    if (deleteError) {
       setAlertMsg(t("errorDeletingCourse"));
     } else {
       setAlertMsg(t("courseDeleted"));
@@ -230,7 +285,7 @@ const ManageCoursesView: React.FC<Props> = ({
                 className="cancel-btn"
                 onClick={() => setConfirmDeleteId(null)}
               >
-                ✅ {t("yes")}
+                  ❌ {t('no')}
               </button>
             </div>
           </div>

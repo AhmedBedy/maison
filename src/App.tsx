@@ -35,11 +35,18 @@ function App() {
 
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
+  const [homeResetKey, setHomeResetKey] = useState(0);
+
 
 
   function setAlertMsg(msg: string | null) {
     settMsg(msg);
     setTimeout(() => settMsg(null), 3000);
+  }
+
+  function goHome() {
+    setView('home');
+    setHomeResetKey((k) => k + 1);
   }
 
   useEffect(() => {
@@ -62,30 +69,10 @@ function App() {
         setIsStudentLogin={setIsStudentLogin}
         setAlertMsg={setAlertMsg}
         t={t}
+        onHomeClick={goHome}
       />
       <div className="Content fade-in">
-        {view === 'home' && (
-          <Home   
-          
-          view={view}
-        setView={setView}
-        lang={lang}
-        changeLang={changeLang}
-        isAdminLogin={isAdminLogin}
-        isStudentLogin={isStudentLogin}
-        setIsAdminLogin={setIsAdminLogin}
-        setIsStudentLogin={setIsStudentLogin}
-        setAlertMsg={setAlertMsg}
-        t={t}
-        supabase={supabase}
-          
-          
-          
-          
-          
-          
-          />
-        )}
+      {view === 'home' && <Home key={homeResetKey} t={t} />}
 
         {view === 'admin' && (
           <Admin

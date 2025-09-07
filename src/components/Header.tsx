@@ -17,6 +17,7 @@ type HeaderProps = {
   setIsStudentLogin: (v: boolean) => void;
   setAlertMsg: (v: string) => void;
   t: (v: TranslationKeys) => string;
+  onHomeClick: () => void;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -30,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({
   setIsStudentLogin,
   setAlertMsg,
   t,
+  onHomeClick,
 }) => {
   const getLangName = (lang: string) => {
     return lang === 'ar' ? 'العربية' : lang === 'fr' ? 'Français' : 'English';
@@ -67,9 +69,9 @@ const Header: React.FC<HeaderProps> = ({
           <div className="header-btn">
             <nav>
               <div className="nav-left">
-                <button
+              <button
                   className={`home-btn ${view === 'home' ? 'active' : ''}`}
-                  onClick={() => setView('home')}
+                  onClick={onHomeClick}
                 >
                   {t('home')}
                 </button>
@@ -103,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({
                 className="logout"
                 onClick={() => {
                   setIsAdminLogin(false);
-                  setView('home');
+                  onHomeClick();
                 }}
               >
                 🔒 {t('logout')} ➡️
@@ -112,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({
             <nav className="nav-left">
               <button
                 className={`home-btn ${view === 'home' ? 'active' : ''}`}
-                onClick={() => setView('home')}
+                onClick={onHomeClick}
               >
                 {t('home')}
               </button>
@@ -138,16 +140,16 @@ const Header: React.FC<HeaderProps> = ({
                 className="logout"
                 onClick={() => {
                   setIsStudentLogin(false);
-                  setView('home');
+                  onHomeClick();
                 }}
               >
                 🔒 {t('logout')} ➡️
               </button>
-            </div>
+            </div>␊
             <nav className="nav-left">
               <button
                 className={`home-btn ${view === 'home' ? 'active' : ''}`}
-                onClick={() => setView('home')}
+                onClick={onHomeClick}
               >
                 {t('home')}
               </button>

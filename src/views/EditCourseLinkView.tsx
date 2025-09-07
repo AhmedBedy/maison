@@ -94,7 +94,94 @@ const EditCourseLinkView: React.FC<Props> = ({ selectedCourse, setView, setAlert
     }));
     const { error: gradeError } = await supabase.from('course_grades').insert(newGrades);
 
-    if (updateError || subjectError || gradeError) {
+    // 4. Ensure grade-subject links exist so subjects appear under grades
+    const gradeSubjectPairs = selectedGradeIds.flatMap((grade_id) =>
+      selectedSubjectIds.map((subject_id) => ({ grade_id, subject_id }))
+    );
+    // Fetch existing grade-subject links to avoid duplicates
+    const {
+      data: existingLinks,
+      error: fetchGradeSubjectError,
+    } = await supabase
+      .from('grade_subjects')
+      .select('grade_id, subject_id')
+      .in('grade_id', selectedGradeIds)
+      .in('subject_id', selectedSubjectIds);
+
+    const existingSet = new Set(
+      (existingLinks ?? []).map((l) => `${l.grade_id}-${l.subject_id}`)
+    );
+    const missingLinks = gradeSubjectPairs.filter(
+      (l) => !existingSet.has(`${l.grade_id}-${l.subject_id}`)
+    );
+
+    let gradeSubjectError = fetchGradeSubjectError;
+    if (!gradeSubjectError && missingLinks.length > 0) {
+      const { error } = await supabase
+        .from('grade_subjects')
+        .insert(missingLinks);
+      gradeSubjectError = error;
+    }
+
+  // Remove grade-subject links that no longer have any courses
+  if (!gradeSubjectError) {
+    const oldGradeIds = selectedCourse.course_grades.map((g) => g.grade_id);
+    const oldSubjectIds = selectedCourse.course_subjects.map((s) => s.subject_id);
+    const oldPairs = oldGradeIds.flatMap((grade_id) =>
+      oldSubjectIds.map((subject_id) => ({ grade_id, subject_id }))
+    );
+    const newPairSet = new Set(
+      gradeSubjectPairs.map((p) => `${p.grade_id}-${p.subject_id}`)
+    );
+    const removedPairs = oldPairs.filter(
+      (p) => !newPairSet.has(`${p.grade_id}-${p.subject_id}`)
+    );
+
+    for (const { grade_id, subject_id } of removedPairs) {
+      const { data: gradeCourses, error: gradeCoursesError } = await supabase
+        .from('course_grades')
+        .select('course_id')
+        .eq('grade_id', grade_id);
+      if (gradeCoursesError) {
+        gradeSubjectError = gradeCoursesError;
+        break;
+      }
+      const gradeCourseIds = (gradeCourses ?? []).map(
+        (c: { course_id: number }) => c.course_id
+      );
+      if (gradeCourseIds.length === 0) {
+        const { error } = await supabase
+          .from('grade_subjects')
+          .delete()
+          .eq('grade_id', grade_id)
+          .eq('subject_id', subject_id);
+        if (error) gradeSubjectError = error;
+        continue;
+      }
+      const { data: linked, error: linkedError } = await supabase
+        .from('course_subjects')
+        .select('course_id')
+        .eq('subject_id', subject_id)
+        .in('course_id', gradeCourseIds);
+      if (linkedError) {
+        gradeSubjectError = linkedError;
+        break;
+      }
+      if (!linked || linked.length === 0) {
+        const { error } = await supabase
+          .from('grade_subjects')
+          .delete()
+          .eq('grade_id', grade_id)
+          .eq('subject_id', subject_id);
+        if (error) {
+          gradeSubjectError = error;
+          break;
+        }
+      }
+    }
+  }
+
+    if (updateError || subjectError || gradeError || gradeSubjectError) {
       setAlertMsg('Error updating course');
     } else {
       setAlertMsg('Course updated successfully');
