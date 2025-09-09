@@ -9,11 +9,24 @@ export type Resource = {
   title: string;
 };
 
-export type AssessmentQuestion = {
-  question: string;
-  options: string[];
-  answer: string;
+type MCAnswer = {
+  text: string;
+  correct: boolean;
 };
+
+type MCQuestion = {
+  prompt: string;
+  answers: MCAnswer[];
+};
+
+type TFStatement = {
+  text: string;
+  isTrue: boolean;
+};
+
+type AssessmentItem =
+  | { type: 'single-choice' | 'multiple-choice'; questions: MCQuestion[] }
+  | { type: 'true-false'; statements: TFStatement[] };
 
 export type Course = {
   id: number;
@@ -23,15 +36,16 @@ export type Course = {
   img_url: string | null;
   video_url: string | null;
   resources: Resource[] | null;
-  assessment_questions: AssessmentQuestion[] | null;
+  assessment_questions: AssessmentItem[] | null;
   display_order?: number;
 
 };
 
 type RawCourse = Omit<Course, 'resources' | 'assessment_questions'> & {
   resources: string | Resource[] | null;
-  assessment_questions: string | AssessmentQuestion[] | null;
+  assessment_questions: string | AssessmentItem[] | null;
 };
+
 
 type CoursesViewProps = {
   gradeId: number;

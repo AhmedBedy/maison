@@ -17,4 +17,6 @@ export type ViewType =
   | 'manage-courses'
   | 'edit-course'
   | 'edit-course-link'
-  | 'add-course';
+  | 'add-course'
+  | 'assessment-bank'
+  | 'assessment-builder';

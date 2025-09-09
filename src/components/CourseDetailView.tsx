@@ -7,11 +7,24 @@ export type Resource = {
   title: string;
 };
 
-export type AssessmentQuestion = {
-  question: string;
-  options: string[];
-  answer: string;
+type MCAnswer = {
+  text: string;
+  correct: boolean;
 };
+
+type MCQuestion = {
+  prompt: string;
+  answers: MCAnswer[];
+};
+
+type TFStatement = {
+  text: string;
+  isTrue: boolean;
+};
+
+type AssessmentItem =
+  | { type: 'single-choice' | 'multiple-choice'; questions: MCQuestion[] }
+  | { type: 'true-false'; statements: TFStatement[] };
 
 export type Course = {
   id: number;
@@ -19,7 +32,7 @@ export type Course = {
   description: string;
   video_url: string | null;
   resources: Resource[] | null;
-  assessment_questions: AssessmentQuestion[] | null;
+  assessment_questions: AssessmentItem[] | null;
 };
 
 type CourseDetailViewProps = {
@@ -29,19 +42,78 @@ type CourseDetailViewProps = {
 
 const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) => {
   const [assessmentStarted, setAssessmentStarted] = useState(false);
-  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
+  const [userAnswers, setUserAnswers] = useState<Record<string, string | string[] | boolean>>({});
   const [assessmentSubmitted, setAssessmentSubmitted] = useState(false);
+  const [score, setScore] = useState<{ correct: number; total: number } | null>(null);
 
   if (!course) return null;
 
   const resources = course.resources || [];
   const assessment = course.assessment_questions || [];
 
-  const handleAnswerChange = (index: number, value: string) => {
-    setUserAnswers((prev) => ({ ...prev, [index]: value }));
+  const handleMCAnswerChange = (
+    key: string,
+    value: string,
+    checked: boolean,
+    isMultiple: boolean,
+  ) => {
+    setUserAnswers((prev) => {
+      if (isMultiple) {
+        const existing = Array.isArray(prev[key]) ? [...(prev[key] as string[])] : [];
+        const updated = checked
+          ? [...existing, value]
+          : existing.filter((v) => v !== value);
+        return { ...prev, [key]: updated };
+      }
+      return { ...prev, [key]: value };
+    });
+  };
+
+  const handleTFChange = (key: string, value: boolean) => {
+    setUserAnswers((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = () => {
+    let total = 0;
+    let correct = 0;
+
+    assessment.forEach((section, sIdx) => {
+      if (section.type === 'true-false') {
+        section.statements.forEach((s, idx) => {
+          total += 1;
+          const key = `tf-${sIdx}-${idx}`;
+          if (userAnswers[key] === s.isTrue) {
+            correct += 1;
+          }
+        });
+      } else {
+        section.questions.forEach((q, qIdx) => {
+          total += 1;
+          const key = `mc-${sIdx}-${qIdx}`;
+          const ans = userAnswers[key];
+          if (section.type === 'single-choice') {
+            const correctAns = q.answers.find((a) => a.correct)?.text;
+            if (ans === correctAns) {
+              correct += 1;
+            }
+          } else {
+            const correctOptions = q.answers
+              .filter((a) => a.correct)
+              .map((a) => a.text)
+              .sort();
+            const userSelection = Array.isArray(ans) ? [...ans].sort() : [];
+            if (
+              correctOptions.length === userSelection.length &&
+              correctOptions.every((opt, idx) => opt === userSelection[idx])
+            ) {
+              correct += 1;
+            }
+          }
+        });
+      }
+    });
+
+    setScore({ correct, total });
     setAssessmentSubmitted(true);
     setAssessmentStarted(false);
   };
@@ -95,37 +167,101 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
               handleSubmit();
             }}
           >
-            {assessment.map((q, i) => (
-              <div key={i} className="assessment-question">
-                <p><strong>{q.question}</strong></p>
-                {q.options.map((opt, j) => (
-                  <label key={j}>
-                    <input
-                      type="radio"
-                      name={`question-${i}`}
-                      value={opt}
-                      checked={userAnswers[i] === opt}
-                      onChange={() => handleAnswerChange(i, opt)}
-                      required
-                    />
-                    {opt}
-                  </label>
-                ))}
-              </div>
+               {assessment.map((section, sIdx) => (
+              <React.Fragment key={sIdx}>
+                {section.type === 'true-false'
+                  ? section.statements.map((s, idx) => {
+                      const key = `tf-${sIdx}-${idx}`;
+                      return (
+                        <div key={key} className="assessment-question">
+                          <p><strong>{s.text}</strong></p>
+                          <label>
+                            <input
+                              type="radio"
+                              name={key}
+                              value="true"
+                              checked={userAnswers[key] === true}
+                              onChange={() => handleTFChange(key, true)}
+                              required
+                            />
+                            True
+                          </label>
+                          <label>
+                            <input
+                              type="radio"
+                              name={key}
+                              value="false"
+                              checked={userAnswers[key] === false}
+                              onChange={() => handleTFChange(key, false)}
+                              required
+                            />
+                            False
+                          </label>
+                        </div>
+                      );
+                    })
+                  : section.questions.map((q, qIdx) => {
+                      const key = `mc-${sIdx}-${qIdx}`;
+                      const isMultiple = section.type === 'multiple-choice';
+                      const answer = userAnswers[key];
+                      return (
+                        <div key={key} className="assessment-question">
+                          <p><strong>{q.prompt}</strong></p>
+                          {q.answers.map((ans, aIdx) => (
+                            <label key={aIdx}>
+                              <input
+                                type={isMultiple ? 'checkbox' : 'radio'}
+                                name={key}
+                                value={ans.text}
+                                checked={
+                                  isMultiple
+                                    ? Array.isArray(answer) && answer.includes(ans.text)
+                                    : answer === ans.text
+                                }
+                                onChange={(e) =>
+                                  handleMCAnswerChange(
+                                    key,
+                                    ans.text,
+                                    e.target.checked,
+                                    isMultiple,
+                                  )
+                                }
+                                required={!isMultiple}
+                              />
+                              {ans.text}
+                            </label>
+                          ))}
+                        </div>
+                      );
+                    })}
+              </React.Fragment>
             ))}
             <button type="submit">Submit Assessment</button>
           </form>
         )}
 
-        {assessmentSubmitted && (
+{assessmentSubmitted && score && (
           <div>
-            <p>Thank you for submitting the assessment!</p>
-            <button onClick={() => {
-              setAssessmentSubmitted(false);
-              setUserAnswers({});
-            }}>
-              Restart Assessment
-            </button>
+            {score.correct === score.total ? (
+              <p>Great you passed! Score: {score.correct} / {score.total}</p>
+            ) : (
+              <>
+                <p>
+                  Score: {score.correct} / {score.total}
+                </p>
+                <p>Some answers were incorrect. Please try again.</p>
+                <button
+                  onClick={() => {
+                    setAssessmentSubmitted(false);
+                    setAssessmentStarted(true);
+                    setUserAnswers({});
+                    setScore(null);
+                  }}
+                >
+                  Reattempt Assessment
+                </button>
+              </>
+            )}
           </div>
         )}
       </section>

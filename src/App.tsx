@@ -18,9 +18,23 @@ import ManageCoursesView from './views/ManageCoursesView';
 import EditCourseView from './views/EditCourseView';
 import EditCourseLinkView from './views/EditCourseLinkView';
 import AddCourseView from './views/AddCourseView';
+import AssessmentBankView from './views/AssessmentBankView';
+import AssessmentBuilderView from './views/AssessmentBuilderView ';
 import './styles/App.css';
 import './styles/Header.css';
 import type { ViewType } from './types';
+
+type Student = {
+  id: number;
+  name: string;
+  phone: number;
+  class: string;
+  password: number;
+};
+
+// Flexible course type used across multiple views
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Course = any;
 
 function App() {
   const [view, setView] = useState<ViewType>('home');
@@ -31,13 +45,17 @@ function App() {
 
   const [msg, settMsg] = useState<string | null>('ahmed');
 
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
-  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const [homeResetKey, setHomeResetKey] = useState(0);
 
-
+  const [newCourseAssessments, setNewCourseAssessments] = useState<unknown[]>([]);
+  const [assessmentType, setAssessmentType] = useState<
+    'single-choice' | 'multiple-choice' | 'true-false' | null
+  >(null);
 
   function setAlertMsg(msg: string | null) {
     settMsg(msg);
@@ -173,6 +191,7 @@ function App() {
     setView={setView}
     setAlertMsg={setAlertMsg}
     setSelectedCourse={setSelectedCourse}
+    assessment={newCourseAssessments}
   />
 )}
 
@@ -200,6 +219,23 @@ function App() {
   />
 )}
 
+
+{view === 'assessment-bank' && (
+  <AssessmentBankView
+    setView={setView}
+    setAssessmentType={setAssessmentType}
+    setAlertMsg={setAlertMsg}
+  />
+)}
+
+{view === 'assessment-builder' && assessmentType && (
+  <AssessmentBuilderView
+    setView={setView}
+    type={assessmentType}
+    addAssessment={(a) => setNewCourseAssessments([...newCourseAssessments, a])}
+    setAlertMsg={setAlertMsg}
+  />
+)}
 
 
 

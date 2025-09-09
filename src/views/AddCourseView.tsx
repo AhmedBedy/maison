@@ -17,7 +17,8 @@ const AddCourseView: React.FC<{
   setView: (view: ViewType) => void;
   setAlertMsg: (msg: string) => void;
   setSelectedCourse: (course: CourseForLink) => void;
-}> = ({ setView, setAlertMsg, setSelectedCourse }) => {
+  assessment: unknown[];
+}> = ({ setView, setAlertMsg, setSelectedCourse, assessment }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
@@ -26,7 +27,7 @@ const AddCourseView: React.FC<{
   const [displayOrder, setDisplayOrder] = useState(0);
   const [prerequisites, setPrerequisites] = useState<string[]>([]);
   const [resources, setResources] = useState<unknown[]>([]);
-  const [assessment, setAssessment] = useState<unknown[]>([]);
+  
 
   const handleSave = async () => {
     const { data, error } = await supabase
@@ -112,18 +113,22 @@ const AddCourseView: React.FC<{
           }}
         />
 
-        <label>🧪 Assessment Questions (JSON format)</label>
-        <textarea
-          rows={4}
-          value={JSON.stringify(assessment, null, 2)}
-          onChange={(e) => {
-            try {
-              setAssessment(JSON.parse(e.target.value));
-            } catch {
-              // ignore
-            }
-          }}
-        />
+<label>🧪 Assessments</label>
+        <div className="json-array">
+          {assessment.length === 0 ? (
+            <p>No assessments added</p>
+          ) : (
+            <ul>
+              {assessment.map((a, idx) => (
+                <li key={idx}>{(a as { type?: string }).type ?? 'Assessment'}</li>
+              ))}
+            </ul>
+          )}
+          <button type="button" onClick={() => setView('assessment-bank')}>
+            ➕ Add Assessment
+          </button>
+        </div>
+
 
         <div className="add-form" style={{ marginTop: '1rem' }}>
           <button onClick={handleSave}>💾 Save</button>

@@ -109,3 +109,26 @@
     font-weight: bold;
   }
   
+  
+  .assessment-question {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .assessment-question label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .course-detail-container {
+      padding: 10px;
+    }
+
+    .assessment-question label {
+      font-size: 0.9rem;
+    }
+  }

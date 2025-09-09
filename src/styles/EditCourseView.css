@@ -88,3 +88,14 @@
     width: 100%;
     max-width: 400px;
   }
+
+  @media (max-width: 600px) {
+    .edit-course-container {
+      padding: 1rem;
+    }
+
+    .edit-course-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }

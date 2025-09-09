@@ -1,0 +1,26 @@
+.assessment-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  .assessment-list li button {
+    width: 100%;
+    padding: 0.6rem;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 600px) {
+    .assessment-list {
+      max-width: 100%;
+    }
+  
+    .assessment-list li button {
+      font-size: 0.9rem;
+    }
+  }
+  
