@@ -78,7 +78,7 @@ form input {
   padding: 12px 24px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
+  z-index: 9998;
   font-weight: bold;
   user-select: none;
   max-width: 90%;
